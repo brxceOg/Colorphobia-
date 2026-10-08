@@ -29,7 +29,7 @@ p{line-height:1.6;font-size:12px}
 .hidden{display:none!important}
 #area{position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);top:14px;z-index:4;background:#eee9dc;color:#181716;border:3px solid #181716;padding:9px 14px;box-shadow:4px 4px 0 #181716;font-size:11px;letter-spacing:1px;pointer-events:none}
 #hud{position:fixed;left:14px;top:14px;z-index:4;pointer-events:none}
-#hud span{background:#eee9dc;border:3px solid #181716;padding:8px 10px;box-shadow:4px 4px 0 #181716}#charBtn{position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);bottom:18px;z-index:6;background:#eee9dc;color:#181716;border:3px solid #181716;padding:10px 13px;box-shadow:4px 4px 0 #181716;font:11px monospace;letter-spacing:1px}
+#hud span{background:#eee9dc;border:3px solid #181716;padding:8px 10px;box-shadow:4px 4px 0 #181716}#charBtn{display:none;position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);bottom:18px;z-index:6;background:#eee9dc;color:#181716;border:3px solid #181716;padding:10px 13px;box-shadow:4px 4px 0 #181716;font:11px monospace;letter-spacing:1px}
 #charBtn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #181716}
 #charMenu{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;background:rgba(24,23,22,.42);padding:18px;box-sizing:border-box}
 #charMenu.open{display:flex}
@@ -121,11 +121,12 @@ function resize(){
 addEventListener('resize',resize);resize();
 
 const player={x:350,y:440,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
-let state='office', battle=null, pillsFound=false, flash=0, running=false;
+let state='office', battle=null, pillsFound=false, flash=0, running=false;showCharacterButton();
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+function showCharacterButton(){document.getElementById('charBtn').style.display='block'}
 const charBtn=document.getElementById('charBtn');
 const charMenu=document.getElementById('charMenu');
 const charClose=document.getElementById('charClose');
