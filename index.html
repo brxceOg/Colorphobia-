@@ -28,8 +28,16 @@ p{line-height:1.6;font-size:12px}
 .choice{display:block;width:100%;margin:10px 0;text-align:left;padding:13px}
 .hidden{display:none!important}
 </style>
-</head>
-<body>
+<style>
+@media screen and (orientation:portrait){
+  #game{filter:brightness(.35)}
+  #touch{display:none!important}
+  #portrait{display:flex!important}
+}
+#portrait{display:none;position:fixed;inset:0;z-index:20;align-items:center;justify-content:center;background:#d8d2c4;color:#181716;text-align:center;padding:30px;font:14px ui-monospace,monospace}
+#portrait div{border:3px solid #181716;background:#eee9dc;padding:24px;box-shadow:7px 7px 0 #181716}
+</style></head>
+<body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div>
 <canvas id="game"></canvas>
 <div id="hud"><span id="stats"></span><span id="area">UNKNOWN</span></div>
 <div id="msg"></div>
