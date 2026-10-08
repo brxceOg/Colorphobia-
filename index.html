@@ -121,7 +121,7 @@ function resize(){
 addEventListener('resize',resize);resize();
 
 const player={x:280,y:285,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
-let state='office', battle=null, pillsFound=false, flash=0, running=false;
+let state='office', battle=null, pillsFound=false, flash=0, running=false, encounterStarted=false;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
@@ -217,7 +217,7 @@ function update(){
    if(!collide(player.x,ny))player.y=ny;
   }
   if(state==='office'&&!pillsFound&&Math.hypot(player.x-465,player.y-220)<45){pillsFound=true;player.items++;say('You found the pills. They are the same pills you have been taking.');flash=8}
-  if(state==='office'&&player.x>W-135&&player.y>205&&player.y<330){startBattle()}
+  if(state==='office'&&!encounterStarted&&pillsFound&&player.x>865&&player.x<900&&player.y>185&&player.y<300){encounterStarted=true;startBattle()}
   if(state==='hospital'&&player.x>W-110){say('The factory lies beyond this point. Chapter 2 content will be added here.')}
  }
 }
