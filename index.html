@@ -297,8 +297,12 @@ function render(){
 
   // Door openings in room walls / corridor connections
   ctx.fillStyle='#d2cbbd';
-  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
+  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[650,360,70,70]].forEach(d=>ctx.fillRect(...d));
 
+  // The reception room's bottom doorway is centered on x=685 and lines up exactly with the collision gap below.
+  // It is a real walkable connection between reception and the main hall.
+  ctx.fillStyle='#4b4741';ctx.fillRect(650,360,70,8);
+  ctx.fillStyle='#b8b0a2';ctx.fillRect(658,363,54,3);
   // Room-specific environmental props.
   function px(x,y,w,h,base,detail){
    ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
@@ -339,11 +343,13 @@ function render(){
    ctx.fillStyle='#c5c2b8';ctx.fillRect(x+w-18,y+10,7,3);ctx.fillRect(x+w-18,y+17,7,3);
   }
   function phone(x,y){
+   // Phone sits physically on the reception desk surface.
    ctx.fillStyle='#292826';ctx.fillRect(x,y,18,12);
    ctx.fillStyle='#55514a';ctx.fillRect(x+3,y-4,12,6);
    ctx.fillStyle='#aaa294';ctx.fillRect(x+6,y+4,6,3);
   }
   function bell(x,y){
+   // Bell sits physically on the reception desk surface.
    ctx.fillStyle='#b19a63';ctx.fillRect(x,y,10,7);
    ctx.fillRect(x+2,y-3,6,3);ctx.fillRect(x+4,y+7,2,2);
   }
@@ -371,10 +377,12 @@ function render(){
   // Purposeful room layouts — props stay inside their room boundaries.
   // RECEPTION: desk against the back wall; phone + bell physically sit on it.
   desk(575,155,170,55);
-  phone(620,143);bell(704,144);
+  // Draw these after the desk so they are visibly on top of it, not behind it.
+  phone(610,164);bell(704,164);
   chair(630,225,58,38);
   drawText(568,125,'ENTRANCE',10);
   drawText(585,330,'VISITOR AREA',8);
+  drawText(663,379,'HALL EXIT',8);
 
   // OFFICE: desks face inward, monitors sit on desk surfaces, cabinets against walls.
   desk(135,155,145,60);monitor(188,133);
