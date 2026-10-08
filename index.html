@@ -7,23 +7,25 @@
 <title>COLORPHOBIA — Prototype</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:#080808;color:#eee;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden}
-#game{width:100vw;height:100vh;display:block;background:#111}
-#hud{position:fixed;left:10px;top:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none;font-size:12px;text-shadow:0 2px 3px #000}
-#msg{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);width:min(92vw,620px);padding:12px 14px;background:rgba(0,0,0,.82);border:1px solid #777;display:none;font-size:13px;line-height:1.45}
-#touch{position:fixed;bottom:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end}
-.pad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px;gap:4px}
-button{font:inherit;color:#eee;background:rgba(25,25,25,.9);border:1px solid #666;border-radius:8px;min-width:48px;min-height:48px}
+html,body{margin:0;background:#d8d2c4;color:#181716;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden}
+#game{width:100vw;height:100vh;display:block;background:#d8d2c4;image-rendering:pixelated}
+#hud{position:fixed;left:12px;top:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;font-size:11px;letter-spacing:.4px}
+#hud span{background:#eee9dc;border:2px solid #181716;padding:7px 9px;box-shadow:3px 3px 0 #181716}
+#msg{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);width:min(90vw,560px);padding:13px 15px;background:#eee9dc;border:2px solid #181716;box-shadow:4px 4px 0 #181716;display:none;font-size:12px;line-height:1.5}
+#touch{position:fixed;bottom:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:end;touch-action:none}
+.pad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px 52px;gap:5px}
+button{font:inherit;color:#181716;background:#eee9dc;border:2px solid #181716;border-radius:0;min-width:52px;min-height:52px;box-shadow:3px 3px 0 #181716;touch-action:none;user-select:none}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #181716}
 .pad button:nth-child(1){grid-column:2}.pad button:nth-child(2){grid-column:1;grid-row:2}.pad button:nth-child(3){grid-column:2;grid-row:2}.pad button:nth-child(4){grid-column:3;grid-row:2}.pad button:nth-child(5){grid-column:2;grid-row:3}
-.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:end;max-width:190px}
-.actions button{min-width:58px;min-height:42px;font-size:11px}
-#overlay{position:fixed;inset:0;background:#090909;display:flex;align-items:center;justify-content:center;padding:22px;z-index:5}
-.panel{width:min(94vw,650px);border:1px solid #666;padding:22px;background:#111;box-shadow:0 0 40px #000}
-h1{font-size:30px;letter-spacing:7px;margin:0 0 8px}
-h2{font-size:16px;font-weight:normal;color:#bbb}
-p{line-height:1.55;font-size:13px}
-.start{margin-top:14px;width:100%;height:52px}
-.choice{display:block;width:100%;margin:8px 0;text-align:left;padding:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:end;max-width:200px}
+.actions button{min-width:64px;min-height:43px;font-size:10px}
+#overlay{position:fixed;inset:0;background:#d8d2c4;display:flex;align-items:center;justify-content:center;padding:20px;z-index:5}
+.panel{width:min(92vw,600px);border:3px solid #181716;padding:24px;background:#eee9dc;box-shadow:8px 8px 0 #181716}
+h1{font-size:29px;letter-spacing:8px;margin:0 0 5px}
+h2{font-size:12px;font-weight:normal;letter-spacing:2px;margin-top:0}
+p{line-height:1.6;font-size:12px}
+.start{margin-top:14px;width:100%;height:54px}
+.choice{display:block;width:100%;margin:10px 0;text-align:left;padding:13px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -70,38 +72,47 @@ const keys={};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.querySelectorAll('[data-k]').forEach(b=>{
- b.addEventListener('pointerdown',e=>{e.preventDefault();keys[b.dataset.k]=true});
- ['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,e=>{keys[b.dataset.k]=false}));
+ const k=b.dataset.k;
+ const press=e=>{e.preventDefault();e.stopPropagation();keys[k]=true};
+ const release=e=>{e.preventDefault();keys[k]=false};
+ b.addEventListener('touchstart',press,{passive:false});
+ b.addEventListener('touchend',release,{passive:false});
+ b.addEventListener('touchcancel',release,{passive:false});
+ b.addEventListener('pointerdown',press);
+ b.addEventListener('pointerup',release);
+ b.addEventListener('pointercancel',release);
+ b.addEventListener('pointerout',release);
 });
+addEventListener('touchend',()=>{Object.keys(keys).forEach(k=>keys[k]=false)},{passive:true});
 
 function say(t){msg.textContent=t;msg.style.display='block';clearTimeout(say.t);say.t=setTimeout(()=>msg.style.display='none',4500)}
 function drawText(x,y,t,size=13){ctx.font=size+'px monospace';ctx.fillStyle='#ddd';ctx.fillText(t,x,y)}
-function wall(x,y,w,h){ctx.fillStyle='#292929';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#555';ctx.strokeRect(x,y,w,h)}
+function wall(x,y,w,h){ctx.fillStyle='#eee9dc';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#181716';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h)}
 function world(){
- ctx.fillStyle=state==='office'?'#171717':'#242322';ctx.fillRect(0,0,W,H);
+ ctx.fillStyle=state==='office'?'#d8d2c4':'#c9c3b7';ctx.fillRect(0,0,W,H);
  // floor grid
- ctx.strokeStyle=state==='office'?'#242424':'#343230';ctx.lineWidth=1;
+ ctx.strokeStyle=state==='office'?'#c1bbae':'#b2aca0';ctx.lineWidth=1;
  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,70);ctx.lineTo(x,H-150);ctx.stroke()}
  for(let y=70;y<H-150;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
  if(state==='office'){
   wall(0,65,W,10); wall(0,H-145,W,12);
   wall(30,120,210,18); wall(30,120,18,150); wall(222,120,18,150);
   wall(W-230,120,190,18); wall(W-48,120,18,150);
-  ctx.fillStyle='#aaa';ctx.fillRect(310,105,100,65);drawText(325,140,'DESK',14);
-  ctx.fillStyle='#777';ctx.fillRect(W-115,H-215,55,55);drawText(W-112,H-220,'DOOR',11);
-  ctx.fillStyle='#555';ctx.fillRect(260,250,70,45);drawText(272,277,'SINK',11);
-  if(!pillsFound){ctx.fillStyle='#cfcfcf';ctx.fillRect(455,210,10,16);ctx.fillRect(470,210,10,16);drawText(445,195,'?',11)}
+  ctx.fillStyle='#eee9dc';ctx.fillRect(310,105,100,65);ctx.strokeStyle='#181716';ctx.strokeRect(310,105,100,65);drawText(325,140,'DESK',14);
+  ctx.fillStyle='#b22';ctx.fillRect(W-115,H-215,55,55);drawText(W-112,H-220,'DOOR',11);
+  ctx.fillStyle='#eee9dc';ctx.fillRect(260,250,70,45);ctx.strokeStyle='#181716';ctx.strokeRect(260,250,70,45);drawText(272,277,'SINK',11);
+  if(!pillsFound){ctx.fillStyle='#b22';ctx.fillRect(455,210,10,16);ctx.fillRect(470,210,10,16);drawText(445,195,'?',11)}
   drawText(20,92,'OFFICE',12);
  }else{
   wall(0,65,W,10); wall(0,H-145,W,12);
   wall(40,120,150,18);wall(W-190,120,150,18);
   // industrial corridor
-  for(let x=220;x<W-220;x+=75){ctx.fillStyle='#3a3937';ctx.fillRect(x,180,38,100);ctx.fillStyle='#777';ctx.fillRect(x+8,195,22,70)}
-  ctx.fillStyle='#8a8a8a';ctx.fillRect(W-80,220,40,80);drawText(W-110,205,'INDUSTRIAL',11);
+  for(let x=220;x<W-220;x+=75){ctx.fillStyle='#eee9dc';ctx.fillRect(x,180,38,100);ctx.strokeStyle='#181716';ctx.strokeRect(x,180,38,100);ctx.fillStyle='#b22';ctx.fillRect(x+8,195,22,70)}
+  ctx.fillStyle='#b22';ctx.fillRect(W-80,220,40,80);drawText(W-110,205,'INDUSTRIAL',11);
   drawText(20,92,'HOSPITAL / INDUSTRIAL WING',12);
  }
  // player
- ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fillStyle='#ddd';ctx.fill();ctx.strokeStyle='#111';ctx.stroke();
+ ctx.fillStyle='#181716';ctx.fillRect(player.x-9,player.y-13,18,26);ctx.fillStyle='#eee9dc';ctx.fillRect(player.x-6,player.y-9,12,9);ctx.fillStyle='#b22';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
  if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
 }
 
@@ -148,10 +159,10 @@ function afterPlayer(){
  enemyTurn();
 }
 function drawBattle(){
- ctx.fillStyle='#0b0b0b';ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#2b0000';ctx.beginPath();ctx.arc(W/2,H/2-30,78,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle='#9a9a9a';ctx.lineWidth=2;ctx.stroke();
- ctx.fillStyle='#e0e0e0';ctx.beginPath();ctx.arc(W/2-28,H/2-45,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(W/2+28,H/2-45,8,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#d8d2c4';ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#b22';ctx.fillRect(W/2-70,H/2-95,140,130);
+ ctx.strokeStyle='#181716';ctx.lineWidth=3;ctx.strokeRect(W/2-70,H/2-95,140,130);
+ ctx.fillStyle='#eee9dc';ctx.fillRect(W/2-38,H/2-55,12,12);ctx.fillRect(W/2+26,H/2-55,12,12);ctx.fillStyle='#181716';ctx.fillRect(W/2-34,H/2-51,4,4);ctx.fillRect(W/2+30,H/2-51,4,4);
  drawText(20,105,'RED EYEMITE',16);drawText(20,128,`HP ${battle.hp} / ${battle.max}`,12);
  drawText(20,H-180,`YOU  HP ${player.hp}/${player.maxhp}`,13);
  drawText(20,H-158,`STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`,11);
@@ -160,10 +171,11 @@ function render(){
  if(state==='battle')drawBattle();else world();
  stats.textContent=`HP ${player.hp}/${player.maxhp}  STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`;
 }
+let running=false;
 function loop(){update();render();requestAnimationFrame(loop)}
 document.getElementById('start').onclick=()=>{intro.classList.add('hidden');construct.classList.remove('hidden')};
 document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
- player.construct=b.dataset.c;overlay.classList.add('hidden');touch.classList.remove('hidden');area.textContent='OFFICE';say('You wake somewhere familiar. Or something has made it familiar. Explore.');loop();
+ player.construct=b.dataset.c;overlay.classList.add('hidden');touch.classList.remove('hidden');area.textContent='OFFICE';say('You wake somewhere familiar. Or something has made it familiar. Explore.');if(!running){running=true;loop();}
 });
 </script>
 </body></html>
