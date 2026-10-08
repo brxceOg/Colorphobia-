@@ -66,7 +66,7 @@ let W,H,dpr;
 function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
 addEventListener('resize',resize);resize();
 
-const player={x:275,y:210,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:W/2,y:200,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
@@ -135,10 +135,7 @@ function world(){
 }
 
 function collide(x,y){
- if(x<18||x>W-18||y<88||y>H-165)return true;
- if(state==='office' && x>30&&x<240&&y>120&&y<288)return true;
- if(state==='office' && x>W-230&&x<W-30&&y>120&&y<288)return true;
- if(state==='office' && x>260&&x<330&&y>250&&y<295)return true;
+ if(x<32||x>W-32||y<95||y>H-175)return true;
  return false;
 }
 function update(){
