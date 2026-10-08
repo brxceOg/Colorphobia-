@@ -299,7 +299,7 @@ function render(){
   ctx.fillStyle='#d2cbbd';
   [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
 
-  // Small pixel-art environmental objects (visuals sit over the same collision geometry).
+  // Room-specific environmental props.
   function px(x,y,w,h,base,detail){
    ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
    ctx.fillStyle='#777066';ctx.fillRect(x+3,y+3,w-6,3);
@@ -336,16 +336,67 @@ function render(){
    ctx.fillStyle='#777873';ctx.fillRect(x,y,w,h);
    ctx.fillStyle='#333533';ctx.fillRect(x+7,y+8,w-14,h-16);
    ctx.fillStyle='#a33';ctx.fillRect(x+12,y+13,5,5);
-   ctx.fillStyle='#c5c2b8';ctx.fillRect(x+w-18,y+10,7,3);
-   ctx.fillRect(x+w-18,y+17,7,3);
+   ctx.fillStyle='#c5c2b8';ctx.fillRect(x+w-18,y+10,7,3);ctx.fillRect(x+w-18,y+17,7,3);
+  }
+  function phone(x,y){
+   ctx.fillStyle='#292826';ctx.fillRect(x,y,18,12);
+   ctx.fillStyle='#55514a';ctx.fillRect(x+3,y-4,12,6);
+   ctx.fillStyle='#aaa294';ctx.fillRect(x+6,y+4,6,3);
+  }
+  function bell(x,y){
+   ctx.fillStyle='#b19a63';ctx.fillRect(x,y,10,7);
+   ctx.fillRect(x+2,y-3,6,3);ctx.fillRect(x+4,y+7,2,2);
+  }
+  function monitor(x,y){
+   ctx.fillStyle='#292826';ctx.fillRect(x,y,28,20);
+   ctx.fillStyle='#9a968b';ctx.fillRect(x+3,y+3,22,13);
+   ctx.fillStyle='#292826';ctx.fillRect(x+12,y+20,4,7);ctx.fillRect(x+8,y+27,12,3);
+  }
+  function fridge(x,y){
+   ctx.fillStyle='#a8a79f';ctx.fillRect(x,y,42,65);
+   ctx.fillStyle='#4f4f4b';ctx.fillRect(x+4,y+4,34,28);ctx.fillRect(x+4,y+36,34,25);
+   ctx.fillStyle='#d0ccc0';ctx.fillRect(x+34,y+8,2,8);ctx.fillRect(x+34,y+40,2,8);
+  }
+  function sink(x,y,w){
+   ctx.fillStyle='#777873';ctx.fillRect(x,y,w,28);
+   ctx.fillStyle='#bbb9af';ctx.fillRect(x+7,y+7,w-14,14);
+   ctx.fillStyle='#44433f';ctx.fillRect(x+w/2-2,y+2,4,7);
+  }
+  function shelf(x,y,w,h){
+   ctx.fillStyle='#5b5147';ctx.fillRect(x,y,w,5);
+   ctx.fillRect(x,y+h-5,w,5);ctx.fillRect(x,y,5,h);ctx.fillRect(x+w-5,y,5,h);
+   for(let yy=y+12;yy<y+h-10;yy+=18){ctx.fillRect(x+5,yy,w-10,3);}
   }
 
-  desk(135,160,145,60);desk(325,160,100,60);
-  desk(590,160,150,48);
-  cabinet(925,150,105,70);boxObj(1020,275,55,45);
-  table(135,490,125,55);chair(305,505,75,45);
-  table(550,490,145,65);machine(770,500,125,55);
-  cabinet(930,495,110,95);
+  // RECEPTION: office entrance / lobby.
+  desk(575,205,170,55);phone(620,192);bell(704,194);chair(620,278,58,38);
+  ctx.fillStyle='#9b9182';ctx.fillRect(625,295,75,3);
+  drawText(568,145,'ENTRANCE',10);
+  drawText(585,335,'VISITOR AREA',8);
+
+  // OFFICE: working desks and administrative clutter.
+  desk(135,160,145,60);monitor(188,138);desk(325,160,100,60);monitor(355,140);
+  cabinet(125,245,55,75);cabinet(405,245,55,75);
+  ctx.fillStyle='#6d6255';ctx.fillRect(210,245,45,4);ctx.fillRect(215,252,25,3);
+
+  // STORAGE: shelves and supplies.
+  shelf(915,135,80,100);shelf(1010,135,75,100);
+  boxObj(925,165,28,24);boxObj(963,205,30,22);boxObj(1020,158,35,27);
+  cabinet(925,270,75,55);boxObj(1015,275,55,45);
+  drawText(915,125,'SUPPLIES',8);
+
+  // BREAK ROOM: kitchenette, table, chairs, fridge.
+  fridge(115,485);sink(185,485,125);table(325,500,90,55);
+  chair(300,495,40,28);chair(420,495,40,28);
+  ctx.fillStyle='#777066';ctx.fillRect(205,530,95,4);
+  boxObj(100,585,45,28);
+  drawText(118,465,'KITCHEN',8);
+
+  // WORK FLOOR: machines, work tables and material staging.
+  table(550,490,145,65);table(760,490,125,55);
+  machine(575,580,110,55);machine(790,580,105,55);
+  cabinet(930,495,110,95);boxObj(945,600,40,28);boxObj(995,605,38,25);
+  drawText(555,465,'WORK AREA',8);
   // Small environmental details
   ctx.fillStyle='#aaa294';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
