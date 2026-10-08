@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101010">
+<title>COLORPHOBIA — Prototype</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#080808;color:#eee;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden}
+#game{width:100vw;height:100vh;display:block;background:#111}
+#hud{position:fixed;left:10px;top:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none;font-size:12px;text-shadow:0 2px 3px #000}
+#msg{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);width:min(92vw,620px);padding:12px 14px;background:rgba(0,0,0,.82);border:1px solid #777;display:none;font-size:13px;line-height:1.45}
+#touch{position:fixed;bottom:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end}
+.pad{display:grid;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px;gap:4px}
+button{font:inherit;color:#eee;background:rgba(25,25,25,.9);border:1px solid #666;border-radius:8px;min-width:48px;min-height:48px}
+.pad button:nth-child(1){grid-column:2}.pad button:nth-child(2){grid-column:1;grid-row:2}.pad button:nth-child(3){grid-column:2;grid-row:2}.pad button:nth-child(4){grid-column:3;grid-row:2}.pad button:nth-child(5){grid-column:2;grid-row:3}
+.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:end;max-width:190px}
+.actions button{min-width:58px;min-height:42px;font-size:11px}
+#overlay{position:fixed;inset:0;background:#090909;display:flex;align-items:center;justify-content:center;padding:22px;z-index:5}
+.panel{width:min(94vw,650px);border:1px solid #666;padding:22px;background:#111;box-shadow:0 0 40px #000}
+h1{font-size:30px;letter-spacing:7px;margin:0 0 8px}
+h2{font-size:16px;font-weight:normal;color:#bbb}
+p{line-height:1.55;font-size:13px}
+.start{margin-top:14px;width:100%;height:52px}
+.choice{display:block;width:100%;margin:8px 0;text-align:left;padding:12px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud"><span id="stats"></span><span id="area">UNKNOWN</span></div>
+<div id="msg"></div>
+<div id="touch" class="hidden">
+  <div class="pad">
+    <button data-k="up">▲</button><button data-k="left">◀</button><button data-k="down">▼</button><button data-k="right">▶</button>
+  </div>
+  <div class="actions" id="actions"></div>
+</div>
+
+<div id="overlay">
+ <div class="panel" id="intro">
+  <h1>COLORPHOBIA</h1>
+  <h2>prototype / vertical slice</h2>
+  <p>You haven't seen bright colors in years.</p>
+  <p>Somewhere between a dream, an office, a bathroom, and a thing that should not be alive, something has begun to feel wrong.</p>
+  <p>This prototype contains the opening exploration and first battle. Some later story content is intentionally not implemented yet.</p>
+  <button class="start" id="start">BEGIN</button>
+ </div>
+ <div class="panel hidden" id="construct">
+  <h1>CONSTRUCT</h1>
+  <p>The first major choice from the blueprint belongs here. For this prototype, choose a placeholder disposition so the game can continue without locking in your final canon.</p>
+  <button class="choice" data-c="thought">THOUGHT — observe before acting</button>
+  <button class="choice" data-c="fear">FEAR — survive what you don't understand</button>
+  <button class="choice" data-c="disgust">DISGUST — reject what feels wrong</button>
+ </div>
+</div>
+
+<script>
+const c=document.getElementById('game'),ctx=c.getContext('2d');
+const overlay=document.getElementById('overlay'),intro=document.getElementById('intro'),construct=document.getElementById('construct');
+const touch=document.getElementById('touch'),stats=document.getElementById('stats'),area=document.getElementById('area'),msg=document.getElementById('msg'),actions=document.getElementById('actions');
+let W,H,dpr;
+function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+
+const player={x:140,y:260,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+let state='office', battle=null, pillsFound=false, flash=0;
+const keys={};
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+document.querySelectorAll('[data-k]').forEach(b=>{
+ b.addEventListener('pointerdown',e=>{e.preventDefault();keys[b.dataset.k]=true});
+ ['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,e=>{keys[b.dataset.k]=false}));
+});
+
+function say(t){msg.textContent=t;msg.style.display='block';clearTimeout(say.t);say.t=setTimeout(()=>msg.style.display='none',4500)}
+function drawText(x,y,t,size=13){ctx.font=size+'px monospace';ctx.fillStyle='#ddd';ctx.fillText(t,x,y)}
+function wall(x,y,w,h){ctx.fillStyle='#292929';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#555';ctx.strokeRect(x,y,w,h)}
+function world(){
+ ctx.fillStyle=state==='office'?'#171717':'#242322';ctx.fillRect(0,0,W,H);
+ // floor grid
+ ctx.strokeStyle=state==='office'?'#242424':'#343230';ctx.lineWidth=1;
+ for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,70);ctx.lineTo(x,H-150);ctx.stroke()}
+ for(let y=70;y<H-150;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+ if(state==='office'){
+  wall(0,65,W,10); wall(0,H-145,W,12);
+  wall(30,120,210,18); wall(30,120,18,150); wall(222,120,18,150);
+  wall(W-230,120,190,18); wall(W-48,120,18,150);
+  ctx.fillStyle='#aaa';ctx.fillRect(310,105,100,65);drawText(325,140,'DESK',14);
+  ctx.fillStyle='#777';ctx.fillRect(W-115,H-215,55,55);drawText(W-112,H-220,'DOOR',11);
+  ctx.fillStyle='#555';ctx.fillRect(260,250,70,45);drawText(272,277,'SINK',11);
+  if(!pillsFound){ctx.fillStyle='#cfcfcf';ctx.fillRect(455,210,10,16);ctx.fillRect(470,210,10,16);drawText(445,195,'?',11)}
+  drawText(20,92,'OFFICE',12);
+ }else{
+  wall(0,65,W,10); wall(0,H-145,W,12);
+  wall(40,120,150,18);wall(W-190,120,150,18);
+  // industrial corridor
+  for(let x=220;x<W-220;x+=75){ctx.fillStyle='#3a3937';ctx.fillRect(x,180,38,100);ctx.fillStyle='#777';ctx.fillRect(x+8,195,22,70)}
+  ctx.fillStyle='#8a8a8a';ctx.fillRect(W-80,220,40,80);drawText(W-110,205,'INDUSTRIAL',11);
+  drawText(20,92,'HOSPITAL / INDUSTRIAL WING',12);
+ }
+ // player
+ ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fillStyle='#ddd';ctx.fill();ctx.strokeStyle='#111';ctx.stroke();
+ if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
+}
+
+function collide(x,y){
+ if(x<18||x>W-18||y<88||y>H-165)return true;
+ if(state==='office' && x>30&&x<240&&y>120&&y<288)return true;
+ if(state==='office' && x>W-230&&x<W-30&&y>120&&y<288)return true;
+ if(state==='office' && x>260&&x<330&&y>250&&y<295)return true;
+ return false;
+}
+function update(){
+ if(state!=='battle'){
+  let dx=(keys['arrowright']||keys['d']||keys.right?1:0)-(keys['arrowleft']||keys['a']||keys.left?1:0);
+  let dy=(keys['arrowdown']||keys['s']||keys.down?1:0)-(keys['arrowup']||keys['w']||keys.up?1:0);
+  if(dx||dy){let n=Math.hypot(dx,dy);dx/=n;dy/=n;let nx=player.x+dx*player.spd,ny=player.y+dy*player.spd;if(!collide(nx,player.y))player.x=nx;if(!collide(player.x,ny))player.y=ny}
+  if(state==='office'&&!pillsFound&&Math.hypot(player.x-465,player.y-220)<45){pillsFound=true;player.items++;say('You found the pills. They are the same pills you have been taking.');flash=8}
+  if(state==='office'&&player.x>W-135&&player.y>205&&player.y<330){startBattle()}
+  if(state==='hospital'&&player.x>W-110){say('The factory lies beyond this point. Chapter 2 content will be added here.')}
+ }
+}
+function startBattle(){
+ state='battle';area.textContent='ENCOUNTER';touch.classList.remove('hidden');
+ battle={enemy:'RED EYEMITE',hp:150,max:150,str:25,pow:15,turn:true};
+ player.x=W/2;player.y=H/2;
+ renderActions();
+ say('Something red moves where nothing red should be. RED EYEMITE appeared.');
+}
+function renderActions(){
+ actions.innerHTML='';
+ [['ATTACK',attack],['SPELL',spell],['ITEM',item],['RUN',run]].forEach(([t,f])=>{let b=document.createElement('button');b.textContent=t;b.onclick=f;actions.appendChild(b)})
+}
+function enemyTurn(){
+ if(!battle)return;
+ let dmg=Math.max(1,battle.str-Math.floor(player.fear/4)+Math.floor(Math.random()*7)-2);
+ player.hp=Math.max(0,player.hp-dmg);say('Red Eyemite hits you for '+dmg+'.');
+ if(player.hp<=0){setTimeout(()=>{alert('You died. Reload to retry the prototype.');location.reload()},200)}
+}
+function attack(){if(!battle)return;let dmg=Math.max(1,player.str+Math.floor(Math.random()*8)-4);battle.hp=Math.max(0,battle.hp-dmg);say('ATTACK deals '+dmg+' damage.');afterPlayer()}
+function spell(){if(!battle)return;let dmg=Math.max(1,player.pow+Math.floor(player.thought/5)+Math.floor(Math.random()*6));battle.hp=Math.max(0,battle.hp-dmg);say('THOUGHT distorts the attack. '+dmg+' damage.');afterPlayer()}
+function item(){if(!battle)return;if(player.items<=0){say('You have no pills.');return}player.items--;player.hp=Math.min(player.maxhp,player.hp+24);say('You take a pill. +24 HP. Something about this feels familiar.');afterPlayer()}
+function run(){if(!battle)return;if(Math.random()<.55){battle=null;state='office';touch.classList.add('hidden');area.textContent='OFFICE';say('You escaped.');}else{say('You cannot get away.');enemyTurn()}}
+function afterPlayer(){
+ if(battle.hp<=0){battle=null;state='hospital';touch.classList.add('hidden');area.textContent='HOSPITAL';player.x=90;player.y=250;player.items=0;flash=15;say('The Red Eyemite is gone. The pills are still in your possession. The world cuts somewhere else.');return}
+ enemyTurn();
+}
+function drawBattle(){
+ ctx.fillStyle='#0b0b0b';ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#2b0000';ctx.beginPath();ctx.arc(W/2,H/2-30,78,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#9a9a9a';ctx.lineWidth=2;ctx.stroke();
+ ctx.fillStyle='#e0e0e0';ctx.beginPath();ctx.arc(W/2-28,H/2-45,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(W/2+28,H/2-45,8,0,Math.PI*2);ctx.fill();
+ drawText(20,105,'RED EYEMITE',16);drawText(20,128,`HP ${battle.hp} / ${battle.max}`,12);
+ drawText(20,H-180,`YOU  HP ${player.hp}/${player.maxhp}`,13);
+ drawText(20,H-158,`STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`,11);
+}
+function render(){
+ if(state==='battle')drawBattle();else world();
+ stats.textContent=`HP ${player.hp}/${player.maxhp}  STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`;
+}
+function loop(){update();render();requestAnimationFrame(loop)}
+document.getElementById('start').onclick=()=>{intro.classList.add('hidden');construct.classList.remove('hidden')};
+document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
+ player.construct=b.dataset.c;overlay.classList.add('hidden');touch.classList.remove('hidden');area.textContent='OFFICE';say('You wake somewhere familiar. Or something has made it familiar. Explore.');loop();
+});
+</script>
+</body></html>
