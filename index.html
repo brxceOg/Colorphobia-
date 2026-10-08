@@ -121,7 +121,7 @@ function resize(){
 addEventListener('resize',resize);resize();
 
 const player={x:350,y:440,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
-let state='office', battle=null, pillsFound=false, flash=0, running=false;showCharacterButton();
+let state='office', battle=null, pillsFound=false, flash=0, running=false;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
@@ -306,7 +306,7 @@ function render(){
 function loop(){update();render();requestAnimationFrame(loop)}
 document.getElementById('start').onclick=()=>{intro.classList.add('hidden');construct.classList.remove('hidden')};
 document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
- player.construct=b.dataset.c;overlay.classList.add('hidden');touch.classList.remove('hidden');area.textContent='OFFICE';say('You wake somewhere familiar. Or something has made it familiar. Explore.');if(!running){running=true;loop();}
+ player.construct=b.dataset.c;overlay.classList.add('hidden');touch.classList.remove('hidden');area.textContent='OFFICE';showCharacterButton();say('You wake somewhere familiar. Or something has made it familiar. Explore.');if(!running){running=true;loop();}
 });
 </script>
 </body></html>
