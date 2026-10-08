@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:#d8d2c4;color:#181716;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
-#game{width:100vw;height:100vh;display:block;background:#d8d2c4;image-rendering:pixelated}
+#game{display:block;background:#d8d2c4;image-rendering:pixelated;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 8px #181716}
 #hud{position:fixed;left:12px;top:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;font-size:11px;letter-spacing:.4px}
 #hud span{background:#eee9dc;border:2px solid #181716;padding:7px 9px;box-shadow:3px 3px 0 #181716}
 #msg{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);width:min(90vw,560px);padding:13px 15px;background:#eee9dc;border:2px solid #181716;box-shadow:4px 4px 0 #181716;display:none;font-size:12px;line-height:1.5}
@@ -83,7 +83,16 @@ const c=document.getElementById('game'),ctx=c.getContext('2d');
 const overlay=document.getElementById('overlay'),intro=document.getElementById('intro'),construct=document.getElementById('construct');
 const touch=document.getElementById('touch'),stats=document.getElementById('stats'),area=document.getElementById('area'),msg=document.getElementById('msg'),actions=document.getElementById('actions');
 let W,H,dpr;
-function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+function resize(){
+ dpr=devicePixelRatio||1;
+ const maxW=innerWidth-16, maxH=innerHeight-16;
+ const targetRatio=16/9;
+ if(maxW/maxH>targetRatio){H=maxH;W=Math.floor(H*targetRatio);}
+ else{W=maxW;H=Math.floor(W/targetRatio);}
+ c.width=W*dpr;c.height=H*dpr;
+ c.style.width=W+'px';c.style.height=H+'px';
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+}
 addEventListener('resize',resize);resize();
 
 const player={x:350,y:440,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
