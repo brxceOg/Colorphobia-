@@ -29,7 +29,21 @@ p{line-height:1.6;font-size:12px}
 .hidden{display:none!important}
 #area{position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);top:14px;z-index:4;background:#eee9dc;color:#181716;border:3px solid #181716;padding:9px 14px;box-shadow:4px 4px 0 #181716;font-size:11px;letter-spacing:1px;pointer-events:none}
 #hud{position:fixed;left:14px;top:14px;z-index:4;pointer-events:none}
-#hud span{background:#eee9dc;border:3px solid #181716;padding:8px 10px;box-shadow:4px 4px 0 #181716}</style>
+#hud span{background:#eee9dc;border:3px solid #181716;padding:8px 10px;box-shadow:4px 4px 0 #181716}#charBtn{position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);bottom:18px;z-index:6;background:#eee9dc;color:#181716;border:3px solid #181716;padding:10px 13px;box-shadow:4px 4px 0 #181716;font:11px monospace;letter-spacing:1px}
+#charBtn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #181716}
+#charMenu{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;background:rgba(24,23,22,.42);padding:18px;box-sizing:border-box}
+#charMenu.open{display:flex}
+#charPanel{width:min(680px,82vw);max-height:82vh;overflow:auto;background:#eee9dc;color:#181716;border:4px solid #181716;box-shadow:8px 8px 0 #181716;padding:18px;box-sizing:border-box;font:11px monospace}
+#charHead{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #181716;padding-bottom:10px;margin-bottom:12px}
+#charHead b{font-size:17px;letter-spacing:3px}
+#charClose{background:#181716;color:#eee9dc;border:0;padding:7px 10px;font:11px monospace}
+.charGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.charBox{border:2px solid #181716;padding:10px;min-height:95px}
+.charBox h3{margin:0 0 9px;font-size:11px;letter-spacing:2px}
+.charRow{display:flex;justify-content:space-between;padding:3px 0}
+.muted{opacity:.65}
+@media screen and (orientation:portrait){#charBtn{display:none}}
+</style>
 <style>
 @media screen and (orientation:portrait){
   #game{filter:brightness(.35)}
@@ -49,7 +63,18 @@ p{line-height:1.6;font-size:12px}
  .start{height:40px;margin-top:6px;font-size:11px}
 }
 </style></head>
-<body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div><div id="area">OFFICE</div>
+<body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div><div id="area">OFFICE</div><button id="charBtn">CHARACTER</button>
+<div id="charMenu">
+ <div id="charPanel">
+  <div id="charHead"><b>CHARACTER</b><button id="charClose">CLOSE</button></div>
+  <div class="charGrid">
+   <section class="charBox"><h3>STATUS</h3><div id="charStats"></div></section>
+   <section class="charBox"><h3>AILMENTS</h3><div id="charAilments"><span class="muted">None</span></div></section>
+   <section class="charBox"><h3>INVENTORY</h3><div id="charInventory"></div></section>
+   <section class="charBox"><h3>CONDITION</h3><div id="charCondition"><span class="muted">Stable</span></div></section>
+  </div>
+ </div>
+</div>
 <canvas id="game"></canvas>
 
 <div id="msg"></div>
@@ -101,6 +126,24 @@ const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+const charBtn=document.getElementById('charBtn');
+const charMenu=document.getElementById('charMenu');
+const charClose=document.getElementById('charClose');
+function refreshCharacter(){
+ document.getElementById('charStats').innerHTML=
+  '<div class="charRow"><span>HP</span><b>'+player.hp+' / '+player.maxhp+'</b></div>'+
+  '<div class="charRow"><span>Strength</span><b>'+player.str+'</b></div>'+
+  '<div class="charRow"><span>Power</span><b>'+player.pow+'</b></div>'+
+  '<div class="charRow"><span>Fear</span><b>'+player.fear+'</b></div>'+
+  '<div class="charRow"><span>Thought</span><b>'+player.thought+'</b></div>'+
+  '<div class="charRow"><span>Disgust</span><b>'+player.disgust+'</b></div>'+
+  '<div class="charRow"><span>Affinity</span><b>'+player.aff+'</b></div>';
+ document.getElementById('charInventory').innerHTML=
+  '<div class="charRow"><span>Pills</span><b>'+player.items+'</b></div>';
+}
+charBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();refreshCharacter();charMenu.classList.add('open')});
+charClose.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();charMenu.classList.remove('open')});
+charMenu.addEventListener('pointerdown',e=>{if(e.target===charMenu)charMenu.classList.remove('open')});
 document.querySelectorAll('[data-k]').forEach(b=>{
  const k=b.dataset.k;
  const press=e=>{e.preventDefault();e.stopPropagation();touchMove[k]=true;b.classList.add('held')};
