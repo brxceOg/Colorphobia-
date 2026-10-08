@@ -84,7 +84,7 @@ let W,H,dpr;
 function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
 addEventListener('resize',resize);resize();
 
-const player={x:W/2,y:200,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:W/2,y:H/2,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
@@ -134,16 +134,24 @@ function world(){
 
 function collide(x,y){
  const r=player.r;
- if(x-r<32||x+r>W-32||y-r<95||y+r>H-175)return true;
+ if(x-r<42||x+r>W-42||y-r<92||y+r>H-42)return true;
  const obstacles=[];
  if(state==='office'){
-  obstacles.push({x:30,y:120,w:210,h:18},{x:30,y:120,w:18,h:150},{x:222,y:120,w:18,h:150});
-  obstacles.push({x:W-230,y:120,w:190,h:18},{x:W-48,y:120,w:18,h:150});
-  obstacles.push({x:310,y:105,w:100,h:65},{x:260,y:250,w:70,h:45});
- }
- if(state==='hospital'){
-  obstacles.push({x:40,y:120,w:150,h:18},{x:W-190,y:120,w:150,h:18});
-  for(let ox=220;ox<W-220;ox+=75) obstacles.push({x:ox,y:180,w:38,h:100});
+  // Landscape office: perimeter + furniture only.
+  const sx=W/900, sy=H/500;
+  const box=(x,y,w,h)=>obstacles.push({x:x*sx,y:y*sy,w:w*sx,h:h*sy});
+  box(190,150,150,75);      // desk
+  box(430,270,90,48);       // chair/work table
+  box(650,150,110,55);      // cabinet
+  box(745,305,70,95);       // machine
+  box(90,310,105,45);       // low cabinet
+  // upper wall partitions
+  box(40,105,120,16); box(760,105,100,16);
+ } else if(state==='hospital'){
+  const sx=W/900,sy=H/500;
+  const box=(x,y,w,h)=>obstacles.push({x:x*sx,y:y*sy,w:w*sx,h:h*sy});
+  box(100,145,150,35); box(650,145,150,35);
+  box(300,285,45,100); box(555,285,45,100);
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
