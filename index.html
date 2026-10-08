@@ -74,28 +74,8 @@ addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.querySelectorAll('[data-k]').forEach(b=>{
  const k=b.dataset.k;
- const step=14;
- const moveNow=()=>{
-  let nx=player.x,ny=player.y;
-  if(k==='up')ny-=step;
-  if(k==='down')ny+=step;
-  if(k==='left')nx-=step;
-  if(k==='right')nx+=step;
-  if(!collide(nx,player.y))player.x=nx;
-  if(!collide(player.x,ny))player.y=ny;
-  render();
- };
- const press=e=>{
-  e.preventDefault();
-  e.stopPropagation();
-  moveNow();
-  b.classList.add('held');
- };
- const release=e=>{
-  e.preventDefault();
-  touchMove[k]=false;
-  b.classList.remove('held');
- };
+ const press=e=>{e.preventDefault();e.stopPropagation();touchMove[k]=true;b.classList.add('held')};
+ const release=e=>{e.preventDefault();touchMove[k]=false;b.classList.remove('held')};
  b.addEventListener('pointerdown',press);
  b.addEventListener('pointerup',release);
  b.addEventListener('pointercancel',release);
@@ -135,8 +115,19 @@ function world(){
 }
 
 function collide(x,y){
- if(x<32||x>W-32||y<95||y>H-175)return true;
- return false;
+ const r=player.r;
+ if(x-r<32||x+r>W-32||y-r<95||y+r>H-175)return true;
+ const obstacles=[];
+ if(state==='office'){
+  obstacles.push({x:30,y:120,w:210,h:18},{x:30,y:120,w:18,h:150},{x:222,y:120,w:18,h:150});
+  obstacles.push({x:W-230,y:120,w:190,h:18},{x:W-48,y:120,w:18,h:150});
+  obstacles.push({x:310,y:105,w:100,h:65},{x:260,y:250,w:70,h:45});
+ }
+ if(state==='hospital'){
+  obstacles.push({x:40,y:120,w:150,h:18},{x:W-190,y:120,w:150,h:18});
+  for(let ox=220;ox<W-220;ox+=75) obstacles.push({x:ox,y:180,w:38,h:100});
+ }
+ return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
 function update(){
  if(state!=='battle'){
