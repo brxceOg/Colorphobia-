@@ -326,6 +326,25 @@ function render(){
   drawText(112,130,'HOSPITAL / INDUSTRIAL ACCESS',11);
  }
 
+ // Room occlusion: conceal everything outside the room the player is currently inside.
+ if(state==='office'){
+  const rooms=[
+   {x:90,y:100,w:400,h:260},
+   {x:540,y:100,w:300,h:260},
+   {x:890,y:100,w:220,h:260},
+   {x:90,y:430,w:350,h:230},
+   {x:490,y:430,w:620,h:230}
+  ];
+  const room=rooms.find(r=>player.x>r.x+8&&player.x<r.x+r.w-8&&player.y>r.y+8&&player.y<r.y+r.h-8);
+  if(room){
+   ctx.fillStyle='#050505';
+   ctx.fillRect(0,0,worldW,room.y);
+   ctx.fillRect(0,room.y+room.h,worldW,worldH-(room.y+room.h));
+   ctx.fillRect(0,room.y,room.x,room.h);
+   ctx.fillRect(room.x+room.w,room.y,worldW-(room.x+room.w),room.h);
+  }
+ }
+
  // Player
  ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
  ctx.fillStyle='#e8e2d5';ctx.fillRect(player.x-6,player.y-9,12,9);
