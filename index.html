@@ -326,7 +326,7 @@ function render(){
   drawText(112,130,'HOSPITAL / INDUSTRIAL ACCESS',11);
  }
 
- // Room occlusion: conceal everything outside the room the player is currently inside.
+ // Room/corridor visibility: rooms are hidden until entered; connecting halls remain visible.
  if(state==='office'){
   const rooms=[
    {x:90,y:100,w:400,h:260},
@@ -335,13 +335,42 @@ function render(){
    {x:90,y:430,w:350,h:230},
    {x:490,y:430,w:620,h:230}
   ];
+  // Corridors connecting the rooms. These remain visible.
+  const corridors=[
+   {x:490,y:180,w:50,h:55},
+   {x:840,y:190,w:50,h:55},
+   {x:250,y:360,w:60,h:70},
+   {x:700,y:360,w:70,h:70}
+  ];
   const room=rooms.find(r=>player.x>r.x+8&&player.x<r.x+r.w-8&&player.y>r.y+8&&player.y<r.y+r.h-8);
   if(room){
+   // Start with the entire world hidden.
    ctx.fillStyle='#050505';
-   ctx.fillRect(0,0,worldW,room.y);
-   ctx.fillRect(0,room.y+room.h,worldW,worldH-(room.y+room.h));
-   ctx.fillRect(0,room.y,room.x,room.h);
-   ctx.fillRect(room.x+room.w,room.y,worldW-(room.x+room.w),room.h);
+   ctx.fillRect(0,0,worldW,worldH);
+
+   // Re-render the corridor network over the black.
+   ctx.save();
+   ctx.beginPath();
+   corridors.forEach(c=>ctx.rect(c.x,c.y,c.w,c.h));
+   ctx.clip();
+   ctx.fillStyle='#d2cbbd';
+   ctx.fillRect(0,0,worldW,worldH);
+   ctx.restore();
+
+   // Re-render the current room over the black.
+   ctx.save();
+   ctx.beginPath();
+   ctx.rect(room.x,room.y,room.w,room.h);
+   ctx.clip();
+   ctx.fillStyle='#e8e2d5';
+   ctx.fillRect(room.x,room.y,room.w,room.h);
+   ctx.restore();
+
+   // Keep the room walls and corridor entrances visible.
+   ctx.strokeStyle='#191817';
+   ctx.lineWidth=5;
+   ctx.strokeRect(room.x,room.y,room.w,room.h);
+   corridors.forEach(c=>{ctx.strokeRect(c.x,c.y,c.w,c.h);});
   }
  }
 
