@@ -76,16 +76,12 @@ document.querySelectorAll('[data-k]').forEach(b=>{
  const k=b.dataset.k;
  const press=e=>{e.preventDefault();touchMove[k]=true;b.classList.add('held')};
  const release=e=>{e.preventDefault();touchMove[k]=false;b.classList.remove('held')};
- b.addEventListener('touchstart',press,{passive:false});
- b.addEventListener('touchend',release,{passive:false});
- b.addEventListener('touchcancel',release,{passive:false});
  b.addEventListener('pointerdown',press,{passive:false});
  b.addEventListener('pointerup',release,{passive:false});
  b.addEventListener('pointercancel',release,{passive:false});
+ b.addEventListener('pointerleave',release,{passive:false});
 });
-document.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
-document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-document.addEventListener('touchend',e=>e.preventDefault(),{passive:false});
+document.addEventListener('contextmenu',e=>e.preventDefault());
 
 function say(t){msg.textContent=t;msg.style.display='block';clearTimeout(say.t);say.t=setTimeout(()=>msg.style.display='none',4500)}
 function drawText(x,y,t,size=13){ctx.font=size+'px monospace';ctx.fillStyle='#ddd';ctx.fillText(t,x,y)}
