@@ -7,7 +7,7 @@
 <title>COLORPHOBIA — Prototype</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:#d8d2c4;color:#181716;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden}
+html,body{margin:0;background:#d8d2c4;color:#181716;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
 #game{width:100vw;height:100vh;display:block;background:#d8d2c4;image-rendering:pixelated}
 #hud{position:fixed;left:12px;top:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;font-size:11px;letter-spacing:.4px}
 #hud span{background:#eee9dc;border:2px solid #181716;padding:7px 9px;box-shadow:3px 3px 0 #181716}
@@ -68,22 +68,24 @@ addEventListener('resize',resize);resize();
 
 const player={x:140,y:260,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0;
-const keys={};
+const keys={up:false,down:false,left:false,right:false};
+const touchMove={up:false,down:false,left:false,right:false};
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){e.preventDefault()}});
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.querySelectorAll('[data-k]').forEach(b=>{
  const k=b.dataset.k;
- const press=e=>{e.preventDefault();e.stopPropagation();keys[k]=true;b.setPointerCapture?.(e.pointerId)};
- const release=e=>{e.preventDefault();keys[k]=false};
- b.addEventListener('pointerdown',press);
- b.addEventListener('pointerup',release);
- b.addEventListener('pointercancel',release);
- b.addEventListener('lostpointercapture',release);
+ const press=e=>{e.preventDefault();touchMove[k]=true;b.classList.add('held')};
+ const release=e=>{e.preventDefault();touchMove[k]=false;b.classList.remove('held')};
  b.addEventListener('touchstart',press,{passive:false});
  b.addEventListener('touchend',release,{passive:false});
  b.addEventListener('touchcancel',release,{passive:false});
+ b.addEventListener('pointerdown',press,{passive:false});
+ b.addEventListener('pointerup',release,{passive:false});
+ b.addEventListener('pointercancel',release,{passive:false});
 });
-addEventListener('blur',()=>Object.keys(keys).forEach(k=>keys[k]=false));
+document.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchend',e=>e.preventDefault(),{passive:false});
 
 function say(t){msg.textContent=t;msg.style.display='block';clearTimeout(say.t);say.t=setTimeout(()=>msg.style.display='none',4500)}
 function drawText(x,y,t,size=13){ctx.font=size+'px monospace';ctx.fillStyle='#ddd';ctx.fillText(t,x,y)}
@@ -125,8 +127,8 @@ function collide(x,y){
 }
 function update(){
  if(state!=='battle'){
-  let dx=(keys['arrowright']||keys['d']||keys.right?1:0)-(keys['arrowleft']||keys['a']||keys.left?1:0);
-  let dy=(keys['arrowdown']||keys['s']||keys.down?1:0)-(keys['arrowup']||keys['w']||keys.up?1:0);
+  let dx=(keys['arrowright']||keys['d']||keys.right||touchMove.right?1:0)-(keys['arrowleft']||keys['a']||keys.left||touchMove.left?1:0);
+  let dy=(keys['arrowdown']||keys['s']||keys.down||touchMove.down?1:0)-(keys['arrowup']||keys['w']||keys.up||touchMove.up?1:0);
   if(dx||dy){
    let n=Math.hypot(dx,dy);dx/=n;dy/=n;
    let nx=player.x+dx*player.spd,ny=player.y+dy*player.spd;
