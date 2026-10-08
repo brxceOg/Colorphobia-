@@ -299,21 +299,53 @@ function render(){
   ctx.fillStyle='#d2cbbd';
   [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
 
-  // Furniture
-  const furniture=[
-   [135,160,145,60,'DESK'],[325,160,100,60,'DESK'],
-   [590,160,150,48,'RECEPTION'],
-   [925,150,105,70,'CABINET'],[1020,275,55,45,'BOX'],
-   [135,490,125,55,'TABLE'],[305,505,75,45,'CHAIR'],
-   [550,490,145,65,'WORKTABLE'],[770,500,125,55,'MACHINE'],
-   [930,495,110,95,'CABINET']
-  ];
-  furniture.forEach(o=>{
-   ctx.fillStyle='#bbb3a4';ctx.fillRect(o[0],o[1],o[2],o[3]);
-   ctx.strokeStyle='#191817';ctx.lineWidth=3;ctx.strokeRect(o[0],o[1],o[2],o[3]);
-   drawText(o[0]+7,o[1]+o[3]/2,o[4],9);
-  });
+  // Small pixel-art environmental objects (visuals sit over the same collision geometry).
+  function px(x,y,w,h,base,detail){
+   ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
+   ctx.fillStyle='#777066';ctx.fillRect(x+3,y+3,w-6,3);
+   ctx.fillStyle=detail;
+  }
+  function desk(x,y,w,h){
+   px(x,y,w,h,'#756b5e','#332f2a');
+   ctx.fillRect(x+6,y+h-7,w-12,4);
+   ctx.fillRect(x+10,y+h-3,5,8);ctx.fillRect(x+w-15,y+h-3,5,8);
+   ctx.fillStyle='#d8d0c0';ctx.fillRect(x+12,y+8,w-24,5);
+  }
+  function cabinet(x,y,w,h){
+   px(x,y,w,h,'#6d665c','#2d2a26');
+   ctx.fillRect(x+5,y+10,w-10,2);ctx.fillRect(x+5,y+h/2,w-10,2);
+   ctx.fillStyle='#b7afa1';ctx.fillRect(x+w/2-2,y+16,4,2);ctx.fillRect(x+w/2-2,y+h/2+7,4,2);
+  }
+  function table(x,y,w,h){
+   px(x,y,w,h,'#817769','#342f2a');
+   ctx.fillStyle='#bdb4a5';ctx.fillRect(x+8,y+7,w-16,4);
+   ctx.fillStyle='#3d3731';ctx.fillRect(x+10,y+h-4,5,8);ctx.fillRect(x+w-15,y+h-4,5,8);
+  }
+  function chair(x,y,w,h){
+   ctx.fillStyle='#514a43';ctx.fillRect(x+4,y,w-8,h-7);
+   ctx.fillStyle='#777066';ctx.fillRect(x+7,y+3,w-14,h-14);
+   ctx.fillRect(x+w/2-2,y+h-4,4,8);
+  }
+  function boxObj(x,y,w,h){
+   ctx.fillStyle='#8a755b';ctx.fillRect(x,y,w,h);
+   ctx.strokeStyle='#4a3d31';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h);
+   ctx.fillStyle='#b19a7a';ctx.fillRect(x+4,y+4,w-8,2);
+   ctx.fillRect(x+w/2-1,y+4,2,h-8);
+  }
+  function machine(x,y,w,h){
+   ctx.fillStyle='#777873';ctx.fillRect(x,y,w,h);
+   ctx.fillStyle='#333533';ctx.fillRect(x+7,y+8,w-14,h-16);
+   ctx.fillStyle='#a33';ctx.fillRect(x+12,y+13,5,5);
+   ctx.fillStyle='#c5c2b8';ctx.fillRect(x+w-18,y+10,7,3);
+   ctx.fillRect(x+w-18,y+17,7,3);
+  }
 
+  desk(135,160,145,60);desk(325,160,100,60);
+  desk(590,160,150,48);
+  cabinet(925,150,105,70);boxObj(1020,275,55,45);
+  table(135,490,125,55);chair(305,505,75,45);
+  table(550,490,145,65);machine(770,500,125,55);
+  cabinet(930,495,110,95);
   // Small environmental details
   ctx.fillStyle='#aaa294';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
