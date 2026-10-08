@@ -120,7 +120,7 @@ function resize(){
 }
 addEventListener('resize',resize);resize();
 
-const player={x:350,y:440,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:280,y:285,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0, running=false;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
@@ -188,21 +188,21 @@ function world(){
 }
 
 function collide(x,y){
- const r=player.r;
- const worldW=1800,worldH=1000;
- if(x-r<42||x+r>worldW-42||y-r<42||y+r>worldH-42)return true;
+ const r=player.r,worldW=1200,worldH=760;
+ if(x-r<44||x+r>worldW-44||y-r<44||y+r>worldH-44)return true;
  const obstacles=[];
+ const box=(x,y,w,h)=>obstacles.push({x,y,w,h});
  if(state==='office'){
-  const box=(x,y,w,h)=>obstacles.push({x,y,w,h});
-  [[120,120,420,18],[120,312,420,18],[120,120,18,210],[522,120,18,210],
-   [660,120,520,18],[660,312,520,18],[660,120,18,210],[1162,120,18,210],
-   [120,560,1060,18],[120,822,1060,18],[120,560,18,280],[1162,560,18,280],
-   [210,180,150,75],[420,185,90,60],[730,175,170,70],[965,180,120,65],
-   [250,625,170,70],[520,630,130,65],[790,625,170,70],[1020,620,100,90],
-   [1320,180,150,150],[1500,480,130,180],[1280,720,190,100]].forEach(o=>box(...o));
+  // Room walls, leaving intentional doorway gaps.
+  box(90,100,400,5);box(90,355,160,5);box(310,355,180,5);box(90,100,5,260);box(485,100,5,80);box(485,235,5,125);
+  box(540,100,300,5);box(540,355,110,5);box(720,355,120,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,115);
+  box(890,100,220,5);box(890,355,220,5);box(890,100,5,260);box(1105,100,5,260);
+  box(90,430,160,5);box(310,430,130,5);box(90,655,350,5);box(90,430,5,225);box(435,430,5,70);box(435,545,5,110);
+  box(490,430,210,5);box(770,430,340,5);box(490,655,620,5);box(490,430,5,225);box(1105,430,5,225);
+  // furniture
+  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[135,490,125,55],[305,505,75,45],[550,490,145,65],[770,500,125,55],[930,495,110,95]].forEach(o=>box(...o));
  } else {
-  [[120,120,500,18],[120,342,500,18],[120,120,18,240],[602,120,18,240],
-   [760,120,500,18],[760,342,500,18],[760,120,18,240],[1242,120,18,240]].forEach(o=>obstacles.push({x:o[0],y:o[1],w:o[2],h:o[3]}));
+  box(90,100,1020,5);box(90,655,1020,5);box(90,100,5,560);box(1105,100,5,560);
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
@@ -257,51 +257,80 @@ function drawBattle(){
 }
 function render(){
  ctx.clearRect(0,0,W,H);
- ctx.fillStyle=state==='office'?'#d8d2c4':'#c9c3b7';ctx.fillRect(0,0,W,H);
- const worldW=1800,worldH=1000;
+ const worldW=1200,worldH=760;
  const camX=Math.max(0,Math.min(worldW-W,player.x-W/2));
  const camY=Math.max(0,Math.min(worldH-H,player.y-H/2));
- ctx.save();
- ctx.translate(-camX,-camY);
+ ctx.save();ctx.translate(-camX,-camY);
 
- // World floor
- ctx.fillStyle='#d8d2c4';ctx.fillRect(0,0,worldW,worldH);
- // Outer walls
- ctx.fillStyle='#181716';
- ctx.fillRect(0,0,worldW,42);ctx.fillRect(0,worldH-42,worldW,42);
- ctx.fillRect(0,0,42,worldH);ctx.fillRect(worldW-42,0,42,worldH);
+ // Base floor
+ ctx.fillStyle='#d2cbbd';ctx.fillRect(0,0,worldW,worldH);
+
+ // Pixel floor texture — deliberately subtle and irregular.
+ ctx.fillStyle='#c7c0b2';
+ for(let y=44;y<worldH-44;y+=18){
+  for(let x=44;x<worldW-44;x+=18){
+   const n=((x*13+y*7)%29);
+   if(n<5){ctx.fillRect(x+(n%3)*2,y+(n%4)*2,2,2);}
+   else if(n===11||n===17){ctx.fillRect(x+6,y+3,1,1);}
+  }
+ }
+
+ // Outer building shell
+ ctx.fillStyle='#191817';
+ ctx.fillRect(0,0,worldW,44);ctx.fillRect(0,worldH-44,worldW,44);
+ ctx.fillRect(0,0,44,worldH);ctx.fillRect(worldW-44,0,44,worldH);
 
  if(state==='office'){
-  // Landscape office architecture
-  ctx.fillStyle='#eee9dc';
-  ctx.fillRect(120,120,420,210);ctx.strokeStyle='#181716';ctx.lineWidth=4;ctx.strokeRect(120,120,420,210);
-  ctx.fillStyle='#eee9dc';ctx.fillRect(660,120,520,210);ctx.strokeRect(660,120,520,210);
-  ctx.fillStyle='#eee9dc';ctx.fillRect(120,560,1060,280);ctx.strokeRect(120,560,1060,280);
-
-  // desks
-  const furniture=[
-   [210,180,150,75,'DESK'],[420,185,90,60,'DESK'],
-   [730,175,170,70,'DESK'],[965,180,120,65,'DESK'],
-   [250,625,170,70,'TABLE'],[520,630,130,65,'TABLE'],
-   [790,625,170,70,'TABLE'],[1020,620,100,90,'CABINET']
+  // Chapter 1: compact office suite with a short corridor.
+  const rooms=[
+   [90,100,400,260,'OFFICE'],
+   [540,100,300,260,'RECEPTION'],
+   [890,100,220,260,'STORAGE'],
+   [90,430,350,230,'BREAK ROOM'],
+   [490,430,620,230,'WORK FLOOR']
   ];
-  furniture.forEach(o=>{ctx.fillStyle='#c7c0b2';ctx.fillRect(o[0],o[1],o[2],o[3]);ctx.strokeStyle='#181716';ctx.strokeRect(o[0],o[1],o[2],o[3]);drawText(o[0]+8,o[1]+o[3]/2,o[4],12)});
-  // red industrial machines
-  [[1320,180,150,150],[1500,480,130,180],[1280,720,190,100]].forEach(o=>{ctx.fillStyle='#b22';ctx.fillRect(...o);ctx.strokeStyle='#181716';ctx.strokeRect(o[0],o[1],o[2],o[3])});
-  drawText(1260,125,'INDUSTRIAL AREA',16);
-  drawText(150,520,'OFFICE FLOOR',16);
-  drawText(1250,430,'LOCKED',13);
- } else {
-  ctx.fillStyle='#eee9dc';ctx.fillRect(120,120,500,240);ctx.strokeStyle='#181716';ctx.strokeRect(120,120,500,240);
-  ctx.fillStyle='#eee9dc';ctx.fillRect(760,120,500,240);ctx.strokeRect(760,120,500,240);
-  drawText(145,155,'HOSPITAL WING',16);drawText(785,155,'INDUSTRIAL ACCESS',16);
- }
- // Player in world coordinates
- ctx.fillStyle='#181716';ctx.fillRect(player.x-9,player.y-13,18,26);
- ctx.fillStyle='#eee9dc';ctx.fillRect(player.x-6,player.y-9,12,9);
- ctx.fillStyle='#b22';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
- ctx.restore();
+  rooms.forEach(r=>{
+   ctx.fillStyle='#e8e2d5';ctx.fillRect(r[0],r[1],r[2],r[3]);
+   ctx.strokeStyle='#191817';ctx.lineWidth=5;ctx.strokeRect(r[0],r[1],r[2],r[3]);
+   drawText(r[0]+14,r[1]+25,r[4],11);
+  });
 
+  // Door openings in room walls / corridor connections
+  ctx.fillStyle='#d2cbbd';
+  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
+
+  // Furniture
+  const furniture=[
+   [135,160,145,60,'DESK'],[325,160,100,60,'DESK'],
+   [590,160,150,48,'RECEPTION'],
+   [925,150,105,70,'CABINET'],[1020,275,55,45,'BOX'],
+   [135,490,125,55,'TABLE'],[305,505,75,45,'CHAIR'],
+   [550,490,145,65,'WORKTABLE'],[770,500,125,55,'MACHINE'],
+   [930,495,110,95,'CABINET']
+  ];
+  furniture.forEach(o=>{
+   ctx.fillStyle='#bbb3a4';ctx.fillRect(o[0],o[1],o[2],o[3]);
+   ctx.strokeStyle='#191817';ctx.lineWidth=3;ctx.strokeRect(o[0],o[1],o[2],o[3]);
+   drawText(o[0]+7,o[1]+o[3]/2,o[4],9);
+  });
+
+  // Small environmental details
+  ctx.fillStyle='#aaa294';
+  for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
+  ctx.fillStyle='#9f988c';ctx.fillRect(102,300,35,4);ctx.fillRect(108,306,22,3);
+  drawText(470,392,'HALL',9);
+  drawText(1040,392,'LOCKED',9);
+ } else {
+  ctx.fillStyle='#e8e2d5';ctx.fillRect(90,100,1020,560);
+  ctx.strokeStyle='#191817';ctx.lineWidth=5;ctx.strokeRect(90,100,1020,560);
+  drawText(112,130,'HOSPITAL / INDUSTRIAL ACCESS',11);
+ }
+
+ // Player
+ ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
+ ctx.fillStyle='#e8e2d5';ctx.fillRect(player.x-6,player.y-9,12,9);
+ ctx.fillStyle='#a33';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
+ ctx.restore();
 }
 function loop(){update();render();requestAnimationFrame(loop)}
 document.getElementById('start').onclick=()=>{intro.classList.add('hidden');construct.classList.remove('hidden')};
