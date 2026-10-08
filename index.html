@@ -36,6 +36,16 @@ p{line-height:1.6;font-size:12px}
 }
 #portrait{display:none;position:fixed;inset:0;z-index:20;align-items:center;justify-content:center;background:#d8d2c4;color:#181716;text-align:center;padding:30px;font:14px ui-monospace,monospace}
 #portrait div{border:3px solid #181716;background:#eee9dc;padding:24px;box-shadow:7px 7px 0 #181716}
+</style><style>
+@media screen and (orientation:landscape) and (max-height:500px){
+ #overlay{padding:8px;align-items:center}
+ .panel{width:min(88vw,760px);max-height:92vh;box-sizing:border-box;padding:12px 18px;box-shadow:5px 5px 0 #181716;overflow:hidden}
+ h1{font-size:22px;letter-spacing:5px;margin:0 0 2px}
+ h2{font-size:9px;margin:2px 0 5px}
+ p{font-size:10px;line-height:1.25;margin:5px 0}
+ .choice{display:inline-block;width:31%;box-sizing:border-box;margin:4px 1%;padding:8px;font-size:10px;min-height:38px}
+ .start{height:40px;margin-top:6px;font-size:11px}
+}
 </style></head>
 <body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div>
 <canvas id="game"></canvas>
