@@ -66,7 +66,7 @@ let W,H,dpr;
 function resize(){dpr=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
 addEventListener('resize',resize);resize();
 
-const player={x:140,y:260,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:275,y:210,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0;
 const keys={up:false,down:false,left:false,right:false};
 const touchMove={up:false,down:false,left:false,right:false};
