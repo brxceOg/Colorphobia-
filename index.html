@@ -565,8 +565,8 @@ function render(){
     ctx.fillStyle='#bcbcbc';ctx.fillRect(x+2,y+2,w-4,13);ctx.fillStyle='#444444';ctx.font='bold 7px monospace';ctx.textAlign='center';ctx.fillText(label,x+w/2,y+11);ctx.textAlign='left';
     ctx.strokeStyle='#242424';ctx.lineWidth=1;ctx.strokeRect(x,y,w,17);
    }
-   plaque(270,105,72,'PRIVATE OFFICE');plaque(585,150,66,'MEN');plaque(760,150,76,'WOMEN');
-   plaque(946,105,72,'RECORDS');plaque(188,435,70,'BREAK ROOM');plaque(600,435,88,'RECEPTION');plaque(914,435,92,'WORKSTATIONS');
+   plaque(155,105,72,'PRIVATE OFFICE');plaque(585,150,66,'MEN');plaque(760,150,76,'WOMEN');
+   plaque(1010,105,72,'RECORDS');plaque(188,435,70,'BREAK ROOM');plaque(600,435,88,'RECEPTION');plaque(914,435,92,'WORKSTATIONS');
    // Soft pools of fluorescent light: subtle, cold and entirely grayscale.
    [[255,205,150],[600,240,135],[800,240,120],[970,520,180],[300,545,170]].forEach(p=>{
     const g=ctx.createRadialGradient(p[0],p[1],8,p[0],p[1],p[2]);g.addColorStop(0,'rgba(255,255,255,.11)');g.addColorStop(1,'rgba(255,255,255,0)');
