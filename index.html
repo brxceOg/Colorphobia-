@@ -415,19 +415,52 @@ function render(){
   cabinet(915,275,75,50);boxObj(1005,275,55,45);
   drawText(915,115,'SUPPLIES',8);
 
-  // BREAK ROOM: appliances along the wall; table centered; chairs face the table.
-  fridge(115,465);sink(180,465,125);
-  table(310,505,105,55);
-  chair(325,475,40,28);chair(360,565,40,28);
-  boxObj(105,590,45,28);
-  drawText(118,445,'KITCHEN',8);
+  // BREAK ROOM: kitchenette on the left, communal table centered, and clear circulation.
+  fridge(108,465);
+  cabinet(158,465,135,38);
+  sink(178,470,82);
+  // Microwave on the counter, with a readable front panel.
+  ctx.fillStyle='#3b3935';ctx.fillRect(268,449,34,23);
+  ctx.fillStyle='#aaa69b';ctx.fillRect(272,453,26,15);
+  ctx.fillStyle='#33312d';ctx.fillRect(275,456,20,9);
+  ctx.fillStyle='#c2b9a8';ctx.fillRect(284,459,3,3);
+  cabinet(165,435,112,24);
+  // Noticeboard and a couple of pinned notes.
+  ctx.fillStyle='#786b5b';ctx.fillRect(315,442,72,35);
+  ctx.fillStyle='#c6bda9';ctx.fillRect(320,447,62,25);
+  ctx.fillStyle='#8e6255';ctx.fillRect(325,452,17,3);
+  ctx.fillStyle='#6c7a70';ctx.fillRect(325,460,38,3);
+  // Lunch table with evenly spaced chairs on both long sides.
+  table(185,535,180,58);
+  chair(205,505,34,25);chair(260,505,34,25);chair(315,505,34,25);
+  chair(205,600,34,25);chair(260,600,34,25);chair(315,600,34,25);
+  // Bin beside the kitchenette, away from the walking lane.
+  ctx.fillStyle='#565650';ctx.fillRect(112,590,28,35);
+  ctx.fillStyle='#85847b';ctx.fillRect(109,588,34,5);
+  drawText(160,425,'KITCHEN',8);
+  drawText(315,430,'NOTICE BOARD',7);
 
-  // WORK FLOOR: workstations have clear space around them; machines line the far wall.
-  table(545,485,145,65);table(745,485,125,55);
-  machine(555,580,110,55);machine(775,580,105,55);
-  cabinet(935,485,110,95);
-  boxObj(945,600,40,28);boxObj(995,600,38,25);
-  drawText(555,465,'WORK AREA',8);
+  // WORK FLOOR: six organized call-centre cubicles in two rows.
+  // Low partitions frame each station; each desk has a monitor, keyboard and chair.
+  function cubicle(x,y){
+   ctx.fillStyle='#6b716c';
+   ctx.fillRect(x,y,150,5);ctx.fillRect(x,y,5,54);ctx.fillRect(x+145,y,5,54);
+   ctx.fillStyle='#96998e';ctx.fillRect(x+5,y+2,140,2);
+   desk(x+18,y+9,114,31);
+   monitor(x+61,y+8);
+   ctx.fillStyle='#393936';ctx.fillRect(x+51,y+29,34,4);
+   ctx.fillStyle='#8b887e';ctx.fillRect(x+55,y+30,26,2);
+   chair(x+55,y+44,38,23);
+  }
+  cubicle(510,454);cubicle(690,454);cubicle(870,454);
+  cubicle(510,563);cubicle(690,563);cubicle(870,563);
+  // Shared printer station against the right wall.
+  cabinet(1040,465,48,56);
+  ctx.fillStyle='#393936';ctx.fillRect(1045,471,38,18);
+  ctx.fillStyle='#c7c2b7';ctx.fillRect(1050,475,28,7);
+  ctx.fillStyle='#8b887e';ctx.fillRect(1051,486,25,2);
+  drawText(1038,455,'PRINTER',7);
+  drawText(512,445,'CALL CENTRE',8);
   // Small environmental details
   ctx.fillStyle='#aaa294';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
