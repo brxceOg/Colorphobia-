@@ -633,6 +633,64 @@ function render(){
     ctx.fillStyle='#404040';ctx.fillRect(x+12,y+20,4,7);ctx.fillRect(x+8,y+27,12,3);
    });
    keyboard(196,183,26);papers(148,180);keyboard(360,183,24);papers(332,180);
+
+   // LIVED-IN OFFICE PASS: small, grounded desk clutter and maintenance details.
+   // Everything is kept on existing work surfaces or against room walls.
+   function penCup(x,y){
+    ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(x+2,y+3,10,10);
+    ctx.fillStyle='#424242';ctx.fillRect(x,y,10,10);
+    ctx.fillStyle='#8f8f8f';ctx.fillRect(x+2,y+2,6,6);
+    ctx.fillStyle='#292929';ctx.fillRect(x+2,y-5,2,7);ctx.fillRect(x+5,y-7,2,9);ctx.fillRect(x+7,y-4,2,6);
+   }
+   function inTray(x,y,w=18){
+    ctx.fillStyle='#494949';ctx.fillRect(x,y+3,w,8);
+    ctx.fillStyle='#a9a9a9';ctx.fillRect(x+2,y+1,w-4,5);
+    ctx.fillStyle='#d2d2d2';ctx.fillRect(x+3,y,w-6,2);
+    ctx.strokeStyle='#3c3c3c';ctx.lineWidth=1;ctx.strokeRect(x,y+3,w,8);
+   }
+   function mug(x,y){
+    ctx.fillStyle='#555555';ctx.fillRect(x,y,9,8);
+    ctx.fillStyle='#c5c5c5';ctx.fillRect(x+1,y+1,7,5);
+    ctx.strokeStyle='#454545';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x+9,y+4,3,-Math.PI/2,Math.PI/2);ctx.stroke();
+    ctx.fillStyle='#6f6f6f';ctx.fillRect(x+2,y+2,4,1);
+   }
+   function wastebasket(x,y){
+    ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(x+2,y+3,19,21);
+    ctx.fillStyle='#4c4c4c';ctx.fillRect(x,y,18,21);
+    ctx.fillStyle='#8c8c8c';ctx.fillRect(x+2,y+3,14,2);
+    for(let yy=y+7;yy<y+18;yy+=4){ctx.fillStyle='#777777';ctx.fillRect(x+3,yy,12,1);}
+    ctx.fillStyle='#333333';ctx.fillRect(x-1,y,20,3);
+   }
+   function plantPot(x,y){
+    ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(x+2,y+4,20,16);
+    ctx.fillStyle='#4b4b4b';ctx.fillRect(x,y+7,18,12);
+    ctx.fillStyle='#a2a2a2';ctx.fillRect(x+2,y+8,14,2);
+    ctx.fillStyle='#555555';
+    ctx.beginPath();ctx.moveTo(x+9,y+8);ctx.lineTo(x+4,y+1);ctx.lineTo(x+9,y+3);ctx.lineTo(x+11,y-5);ctx.lineTo(x+14,y+2);ctx.lineTo(x+20,y-1);ctx.lineTo(x+15,y+8);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#bcbcbc';ctx.fillRect(x+9,y+3,2,6);
+   }
+   // A tired employee's desk: pens, a stacked in-tray and a cold mug.
+   penCup(259,179);inTray(231,181,20);mug(207,181);
+   // The second desk has a stapler-like block and more paper waiting to be filed.
+   ctx.fillStyle='#3e3e3e';ctx.fillRect(391,180,15,7);ctx.fillStyle='#8b8b8b';ctx.fillRect(393,181,11,2);
+   inTray(335,181,18);wastebasket(432,216);
+   // Reception has a modest desk organizer and a small plant beside the visitor chair.
+   inTray(750,461,22);penCup(756,478);plantPot(775,512);
+   // Waste bins tucked beside the workstation rows, clear of the central aisle.
+   wastebasket(897,510);wastebasket(1078,510);wastebasket(897,620);wastebasket(1078,620);
+   // Small personal traces at the call-centre: mugs and folders, not clutter piles.
+   mug(876,477);inTray(965,477,19);mug(1056,477);
+   inTray(876,587,18);mug(966,587);inTray(1056,587,18);
+   // The break room feels used: a mug left on the table and a notice pinned crookedly.
+   mug(224,548);ctx.fillStyle='#c4c4c4';ctx.fillRect(284,545,20,13);ctx.fillStyle='#656565';ctx.fillRect(287,548,14,2);ctx.fillRect(287,552,10,2);
+   ctx.save();ctx.translate(325,442);ctx.rotate(.035);ctx.fillStyle='#e0e0e0';ctx.fillRect(0,0,18,12);ctx.fillStyle='#696969';ctx.fillRect(3,3,11,1);ctx.fillRect(3,6,8,1);ctx.restore();
+   // Records room: labels on cartons and a compact printer on the lower cabinet.
+   ctx.fillStyle='#c5c5c5';ctx.fillRect(912,178,12,6);ctx.fillStyle='#565656';ctx.fillRect(914,180,8,1);
+   ctx.fillStyle='#c5c5c5';ctx.fillRect(1054,173,15,7);ctx.fillStyle='#565656';ctx.fillRect(1056,175,10,1);
+   ctx.fillStyle='#454545';ctx.fillRect(973,287,37,31);ctx.fillStyle='#9e9e9e';ctx.fillRect(977,291,29,12);
+   ctx.fillStyle='#e0e0e0';ctx.fillRect(981,290,20,3);ctx.fillStyle='#626262';ctx.fillRect(980,306,23,2);ctx.fillRect(1003,296,2,4);
+   // A wall-mounted duty roster sits inside reception's back wall, clear of the plaque.
+   notice(525,442,42,27,[25,30,18,27]);
    // Kitchenette backsplash, paper-towel dispenser and cabinet seams establish function.
    ctx.fillStyle='#555555';// removed stray horizontal artifact
    ctx.fillStyle='#b8b8b8';// removed misplaced paper-like artifactctx.strokeStyle='#343434';ctx.strokeRect(168,443,28,15);
