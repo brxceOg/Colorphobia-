@@ -262,7 +262,7 @@ function update(){
    if(!collide(player.x,ny))player.y=ny;
   }
   if(state==='office'&&!pillsFound&&Math.hypot(player.x-465,player.y-220)<45){pillsFound=true;player.items++;say('You found the pills. They are the same pills you have been taking.');flash=8}
-  if(state==='office'&&!encounterStarted&&pillsFound&&player.x>865&&player.x<900&&player.y>185&&player.y<300){encounterStarted=true;startBattle()}
+  if(state==='office'&&!encounterStarted&&pillsFound&&roomName()==='MEN’S RESTROOM'&&player.x>575&&player.x<635&&player.y>265&&player.y<345){encounterStarted=true;startBattle()}
   if(state==='hospital'&&player.x>W-110){say('The factory lies beyond this point. Chapter 2 content will be added here.')}
  }
 }
@@ -314,6 +314,8 @@ function drawBattle(){
 }
 function render(){
  ctx.clearRect(0,0,W,H);
+ // Encounters use their own battle scene; do not render the exploration map over it.
+ if(state==='battle'){drawBattle();return;}
  const worldW=1200,worldH=760;
  const camX=Math.max(0,Math.min(worldW-W,player.x-W/2));
  const camY=Math.max(0,Math.min(worldH-H,player.y-H/2));
