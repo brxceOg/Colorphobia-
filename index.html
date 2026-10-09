@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:#d8d2c4;color:#181716;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
-#game{display:block;background:#d8d2c4;image-rendering:pixelated;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 8px #181716}
+#playfield{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:calc(100vh * 16 / 9);height:100vh;max-width:calc(100vw - 16px);max-height:calc((100vw - 16px) * 9 / 16);box-shadow:0 0 0 8px #181716;overflow:hidden}#game{display:block;background:#d8d2c4;image-rendering:pixelated;width:100%;height:100%}
 #hud{position:fixed;left:12px;top:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none;font-size:11px;letter-spacing:.4px}
 #hud span{background:#eee9dc;border:2px solid #181716;padding:7px 9px;box-shadow:3px 3px 0 #181716}
 #msg{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);width:min(90vw,560px);padding:13px 15px;background:#eee9dc;border:2px solid #181716;box-shadow:4px 4px 0 #181716;display:none;font-size:12px;line-height:1.5}
@@ -27,7 +27,7 @@ p{line-height:1.6;font-size:12px}
 .start{margin-top:14px;width:100%;height:54px}
 .choice{display:block;width:100%;margin:10px 0;text-align:left;padding:13px}
 .hidden{display:none!important}
-#area{position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);bottom:14px;z-index:4;background:rgba(238,233,220,.88);color:#181716;border:1px solid #181716;padding:5px 8px;box-shadow:2px 2px 0 #181716;font-size:9px;letter-spacing:.6px;pointer-events:none;opacity:0;transition:opacity .2s}#area.visible{opacity:1}
+#area{position:absolute;right:12px;bottom:12px;z-index:3;background:rgba(238,233,220,.88);color:#181716;border:1px solid #181716;padding:5px 8px;box-shadow:2px 2px 0 #181716;font-size:9px;letter-spacing:.6px;pointer-events:none;opacity:0;transition:opacity .2s}#area.visible{opacity:1}
 #hud{position:fixed;left:14px;top:14px;z-index:4;pointer-events:none}
 #hud span{background:#eee9dc;border:3px solid #181716;padding:8px 10px;box-shadow:4px 4px 0 #181716}#charBtn{display:none;position:fixed;right:clamp(34px,calc((100vw - 177.78vh)/2 + 28px),34px);bottom:18px;z-index:6;background:#eee9dc;color:#181716;border:3px solid #181716;padding:10px 13px;box-shadow:4px 4px 0 #181716;font:11px monospace;letter-spacing:1px}
 #charBtn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #181716}
@@ -63,7 +63,7 @@ p{line-height:1.6;font-size:12px}
  .start{height:40px;margin-top:6px;font-size:11px}
 }
 </style></head>
-<body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div><div id="area">OFFICE</div><button id="charBtn">CHARACTER</button>
+<body><div id="portrait"><div>ROTATE YOUR PHONE<br><br>COLORPHOBIA IS DESIGNED FOR LANDSCAPE.</div></div><div id="playfield"><div id="area">OFFICE</div><canvas id="game"></canvas></div><button id="charBtn">CHARACTER</button>
 <div id="charMenu">
  <div id="charPanel">
   <div id="charHead"><b>CHARACTER</b><button id="charClose">CLOSE</button></div>
@@ -75,8 +75,6 @@ p{line-height:1.6;font-size:12px}
   </div>
  </div>
 </div>
-<canvas id="game"></canvas>
-
 <div id="msg"></div>
 <div id="touch" class="hidden">
   <div class="pad">
@@ -115,7 +113,7 @@ function resize(){
  if(maxW/maxH>targetRatio){H=maxH;W=Math.floor(H*targetRatio);}
  else{W=maxW;H=Math.floor(W/targetRatio);}
  c.width=W*dpr;c.height=H*dpr;
- c.style.width=W+'px';c.style.height=H+'px';
+ c.style.width=W+'px';c.style.height=H+'px';document.getElementById('playfield').style.width=W+'px';document.getElementById('playfield').style.height=H+'px';
  ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 addEventListener('resize',resize);resize();
@@ -464,24 +462,6 @@ function render(){
    if(r!==currentRoom) ctx.fillRect(r.x+5,r.y+5,r.w-10,r.h-10);
   });
  }
-
- // Room signs are mounted against the room-side wall beside each doorway,
- // rather than floating out in the corridor. They remain visible over the dark-room overlay.
- function doorSign(x,y,label,vertical=false){
-  ctx.save();
-  ctx.fillStyle='#756b5e';ctx.fillRect(x,y,vertical?24:62,vertical?38:18);
-  ctx.strokeStyle='#191817';ctx.lineWidth=2;ctx.strokeRect(x,y,vertical?24:62,vertical?38:18);
-  ctx.fillStyle='#eee9dc';ctx.font='bold 7px monospace';ctx.textAlign='center';
-  if(vertical){label.split(' ').forEach((word,i)=>ctx.fillText(word,x+12,y+11+i*9));}
-  else ctx.fillText(label,x+31,y+12);
-  ctx.restore();
- }
- // Office door is on the east wall; Storage door on the west wall.
- doorSign(462,235,'OFFICE',true);
- doorSign(842,240,'STORAGE',true);
- // South-wall door signs sit just inside each room, beside the openings.
- doorSign(270,333,'BREAK ROOM',true);
- doorSign(720,333,'WORK FLOOR',true);
 
  // Player
  ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
