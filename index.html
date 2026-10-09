@@ -238,24 +238,6 @@ function world(){
   
  }
  // player
- // Draw collectible after all room fills, furniture, and hidden-room masks.
- if(state==='office'&&!pillsFound){
-  const pulse=.5+.5*Math.sin(Date.now()/190),px=465,py=220;
-  ctx.fillStyle='rgba(0,0,0,.34)';ctx.beginPath();ctx.ellipse(px+2,py+13,18,5,0,0,Math.PI*2);ctx.fill();
-  [[px-7,py-1,-.25],[px+8,py+1,.2]].forEach(p=>{
-   ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(p[2]);
-   ctx.fillStyle='#202020';ctx.beginPath();ctx.roundRect(-6,-11,12,22,6);ctx.fill();
-   ctx.fillStyle='#f1f1f1';ctx.beginPath();ctx.roundRect(-4.5,-9.5,9,19,4.5);ctx.fill();
-   ctx.fillStyle='#888888';ctx.fillRect(-4,-1,8,2);ctx.fillStyle='#ffffff';ctx.fillRect(-2.5,-7,3,4);
-   ctx.strokeStyle='#363636';ctx.lineWidth=1;ctx.stroke();
-   ctx.restore();
-  });
-  const gx=px+22,gy=py-13-pulse*2;
-  ctx.strokeStyle='#ffffff';ctx.lineWidth=1.5;ctx.beginPath();
-  ctx.moveTo(gx,gy-6);ctx.lineTo(gx,gy+6);ctx.moveTo(gx-6,gy);ctx.lineTo(gx+6,gy);
-  ctx.moveTo(gx-3,gy-3);ctx.lineTo(gx+3,gy+3);ctx.moveTo(gx+3,gy-3);ctx.lineTo(gx-3,gy+3);ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,'+(.10+.12*pulse)+')';ctx.beginPath();ctx.arc(px+1,py,24,0,Math.PI*2);ctx.fill();
- }
  drawPlayer();
  if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
 }
@@ -647,7 +629,28 @@ function render(){
    const current=rooms.find(p=>inside(p));ctx.fillStyle='#050505';rooms.forEach(p=>{if(p!==current){ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fill();}});
   }
   // Player
- drawPlayer();
+    // Final pickup pass: draw pills after office masks so they stay visible.
+   if(state==='office'&&!pillsFound){
+    const pulse=.5+.5*Math.sin(Date.now()/190),px=465,py=220;
+    ctx.save();
+    ctx.fillStyle='rgba(0,0,0,.48)';ctx.beginPath();ctx.ellipse(px,py+13,17,5,0,0,Math.PI*2);ctx.fill();
+    [[px-7,py,-.25],[px+8,py+1,.2]].forEach(p=>{
+     ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(p[2]);
+     ctx.fillStyle='#171717';ctx.beginPath();ctx.roundRect(-7,-12,14,24,7);ctx.fill();
+     ctx.fillStyle='#ffffff';ctx.beginPath();ctx.roundRect(-5,-10,10,20,5);ctx.fill();
+     ctx.strokeStyle='#202020';ctx.lineWidth=1.5;ctx.stroke();
+     ctx.fillStyle='#777777';ctx.fillRect(-4,-1,8,2);
+     ctx.fillStyle='#ffffff';ctx.fillRect(-2,-7,3,4);
+     ctx.restore();
+    });
+    const gx=px+22,gy=py-14-pulse*2;
+    ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(gx,gy-7);ctx.lineTo(gx,gy+7);ctx.moveTo(gx-7,gy);ctx.lineTo(gx+7,gy);
+    ctx.moveTo(gx-4,gy-4);ctx.lineTo(gx+4,gy+4);ctx.moveTo(gx+4,gy-4);ctx.lineTo(gx-4,gy+4);ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,'+(.16+.2*pulse)+')';ctx.beginPath();ctx.arc(px,py,25,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+   }
+drawPlayer();
  ctx.restore();
 }
 function loop(){update();updateRoomLabel();render();requestAnimationFrame(loop)}
