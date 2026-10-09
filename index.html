@@ -602,7 +602,7 @@ function render(){
    ctx.fillStyle='#777777';ctx.fillRect(172,447,20,2);ctx.fillRect(172,451,15,2);
    // Light scuffs near doorways; restrained enough not to compete with navigation.
    ctx.fillStyle='rgba(35,35,35,.2)';
-   [[215,382,22,2],[224,386,12,1],[472,390,18,2],[700,389,24,1],[818,390,15,2],[410,414,13,2],[870,414,20,1]].forEach(a=>ctx.fillRect(...a));
+   // Decorative scuff marks removed; these looked like stray floating lines.
    // Subtle vignette gives the sterile rooms a sense of enclosure.
    const vg=ctx.createRadialGradient(600,380,180,600,380,690);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(.72,'rgba(0,0,0,.06)');vg.addColorStop(1,'rgba(0,0,0,.38)');
    ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
@@ -633,21 +633,21 @@ function render(){
    if(state==='office'&&!pillsFound){
     const pulse=.5+.5*Math.sin(Date.now()/190),px=465,py=220;
     ctx.save();
-    ctx.fillStyle='rgba(0,0,0,.48)';ctx.beginPath();ctx.ellipse(px,py+13,17,5,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,.48)';ctx.beginPath();ctx.ellipse(px,py+9,11,3,0,0,Math.PI*2);ctx.fill();
     [[px-7,py,-.25],[px+8,py+1,.2]].forEach(p=>{
      ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(p[2]);
-     ctx.fillStyle='#171717';ctx.beginPath();ctx.roundRect(-7,-12,14,24,7);ctx.fill();
-     ctx.fillStyle='#ffffff';ctx.beginPath();ctx.roundRect(-5,-10,10,20,5);ctx.fill();
+     ctx.fillStyle='#171717';ctx.beginPath();ctx.roundRect(-4.5,-8,9,16,4.5);ctx.fill();
+     ctx.fillStyle='#ffffff';ctx.beginPath();ctx.roundRect(-3.5,-6.5,7,13,3.5);ctx.fill();
      ctx.strokeStyle='#202020';ctx.lineWidth=1.5;ctx.stroke();
      ctx.fillStyle='#777777';ctx.fillRect(-4,-1,8,2);
      ctx.fillStyle='#ffffff';ctx.fillRect(-2,-7,3,4);
      ctx.restore();
     });
-    const gx=px+22,gy=py-14-pulse*2;
+    const gx=px+15,gy=py-9-pulse*2;
     ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.beginPath();
-    ctx.moveTo(gx,gy-7);ctx.lineTo(gx,gy+7);ctx.moveTo(gx-7,gy);ctx.lineTo(gx+7,gy);
-    ctx.moveTo(gx-4,gy-4);ctx.lineTo(gx+4,gy+4);ctx.moveTo(gx+4,gy-4);ctx.lineTo(gx-4,gy+4);ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,'+(.16+.2*pulse)+')';ctx.beginPath();ctx.arc(px,py,25,0,Math.PI*2);ctx.fill();
+    ctx.moveTo(gx,gy-4);ctx.lineTo(gx,gy+4);ctx.moveTo(gx-4,gy);ctx.lineTo(gx+4,gy);
+    ctx.moveTo(gx-2,gy-2);ctx.lineTo(gx+2,gy+2);ctx.moveTo(gx+2,gy-2);ctx.lineTo(gx-2,gy+2);ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,'+(.16+.2*pulse)+')';ctx.beginPath();ctx.arc(px,py,15,0,Math.PI*2);ctx.fill();
     ctx.restore();
    }
 drawPlayer();
