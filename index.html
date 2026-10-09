@@ -221,7 +221,7 @@ function collide(x,y){
   box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
   box(490,430,130,5);box(690,430,120,5);box(490,655,130,5);box(690,655,120,5);box(490,430,5,70);box(490,560,5,95);box(805,430,5,70);box(805,560,5,95);
   box(810,430,300,5);box(810,655,300,5);box(1105,430,5,225);
-  [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[900,125,65,100],[1035,125,65,100],[900,275,60,50],[1035,275,60,45],[545,180,38,48],[615,180,38,48],[545,275,48,28],[735,180,38,48],[805,180,38,48],[735,275,48,28],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[700,450,90,42],[715,500,45,30],[850,455,55,58],[940,455,55,58],[1030,455,55,58],[850,565,55,58],[940,565,55,58],[1030,565,55,58]].forEach(o=>box(...o));
+  [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[900,125,65,100],[1035,125,65,100],[900,275,60,50],[1035,275,60,45],[642,170,46,4],[642,170,4,76],[684,170,4,76],[650,184,30,28],[535,192,23,31],[535,237,23,31],[530,286,32,56],[570,270,24,28],[722,168,43,4],[722,168,4,78],[761,168,4,78],[770,168,43,4],[770,168,4,78],[809,168,4,78],[818,168,43,4],[818,168,4,78],[857,168,4,78],[728,183,30,28],[776,183,30,28],[824,183,30,28],[844,263,31,78],[846,180,26,45],[818,286,17,25],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[700,450,90,42],[715,500,45,30],[850,455,55,58],[940,455,55,58],[1030,455,55,58],[850,565,55,58],[940,565,55,58],[1030,565,55,58]].forEach(o=>box(...o));
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
@@ -409,20 +409,35 @@ function render(){
   cabinet(125,275,55,65);cabinet(410,275,55,65);
   ctx.fillStyle='#6d6255';ctx.fillRect(205,250,45,4);ctx.fillRect(215,257,25,3);
 
-  // MEN’S RESTROOM: tile floor, private stalls, toilets, and a wall-side vanity.
-  ctx.fillStyle='#c9c7bd';ctx.fillRect(525,150,175,205);
-  for(let yy=154;yy<355;yy+=20){ctx.strokeStyle='#aaa99f';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(525,yy);ctx.lineTo(700,yy);ctx.stroke();}
+  // MEN’S RESTROOM: two wall-mounted urinals, one enclosed stall, and a compact side-wall sink.
+  ctx.fillStyle='#c5c5bb';ctx.fillRect(525,150,175,205);
+  for(let yy=154;yy<355;yy+=20){ctx.strokeStyle='#a6a69c';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(525,yy);ctx.lineTo(700,yy);ctx.stroke();}
   for(let xx=530;xx<705;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
-  ctx.fillStyle='#777b75';ctx.fillRect(545,178,4,55);ctx.fillRect(545,178,42,4);ctx.fillRect(583,178,4,55);ctx.fillRect(615,178,4,55);ctx.fillRect(615,178,42,4);ctx.fillRect(653,178,4,55);
+  // One private stall in the rear-right corner.
+  ctx.fillStyle='#626760';ctx.fillRect(642,170,4,76);ctx.fillRect(642,170,46,4);ctx.fillRect(684,170,4,76);
   function toilet(x,y){ctx.fillStyle='#555751';ctx.fillRect(x,y,30,9);ctx.fillStyle='#deddd4';ctx.fillRect(x+3,y+8,24,20);ctx.fillStyle='#aaa99f';ctx.fillRect(x+7,y+12,16,11);ctx.fillStyle='#f0efe8';ctx.fillRect(x+10,y+14,10,7);}
-  toilet(551,190);toilet(621,190);sink(548,285,100);ctx.fillStyle='#555751';ctx.fillRect(557,276,6,10);ctx.fillRect(590,276,6,10);ctx.fillRect(622,276,6,10);
-  // WOMEN’S RESTROOM: matching tilework, separate stalls, and a double-basin vanity.
-  ctx.fillStyle='#c9c7bd';ctx.fillRect(715,150,170,205);
+  toilet(650,184);
+  function urinal(x,y){ctx.fillStyle='#777b75';ctx.fillRect(x,y,23,5);ctx.fillStyle='#e3e1d8';ctx.fillRect(x+3,y+5,17,18);ctx.fillStyle='#aaa99f';ctx.fillRect(x+7,y+9,9,10);ctx.fillStyle='#555751';ctx.fillRect(x+9,y-3,5,4);}
+  urinal(535,195);urinal(535,240);
+  // Narrow sink counter runs against the left wall, leaving the middle aisle open.
+  ctx.fillStyle='#777873';ctx.fillRect(530,286,32,56);ctx.fillStyle='#bbb9af';ctx.fillRect(535,291,22,46);
+  ctx.fillStyle='#44433f';ctx.fillRect(543,298,5,5);ctx.fillRect(543,318,5,5);
+  ctx.fillStyle='#6c706a';ctx.fillRect(570,270,24,28);ctx.fillStyle='#d7d5cc';ctx.fillRect(574,274,16,20);ctx.fillStyle='#343531';ctx.fillRect(580,276,4,4);
+  // WOMEN’S RESTROOM: three full-height private stalls, a longer double vanity, mirror and sanitary bin.
+  ctx.fillStyle='#c8c7bd';ctx.fillRect(715,150,170,205);
   for(let yy=154;yy<355;yy+=20){ctx.strokeStyle='#aaa99f';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(715,yy);ctx.lineTo(885,yy);ctx.stroke();}
   for(let xx=720;xx<890;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
-  ctx.fillStyle='#777b75';ctx.fillRect(735,178,4,55);ctx.fillRect(735,178,42,4);ctx.fillRect(773,178,4,55);ctx.fillRect(805,178,4,55);ctx.fillRect(805,178,42,4);ctx.fillRect(843,178,4,55);
-  toilet(741,190);toilet(811,190);sink(738,285,100);ctx.fillStyle='#555751';ctx.fillRect(747,276,6,10);ctx.fillRect(780,276,6,10);ctx.fillRect(812,276,6,10);
-
+  ctx.fillStyle='#6f746d';
+  ctx.fillRect(722,168,4,78);ctx.fillRect(722,168,43,4);ctx.fillRect(761,168,4,78);
+  ctx.fillRect(770,168,4,78);ctx.fillRect(770,168,43,4);ctx.fillRect(809,168,4,78);
+  ctx.fillRect(818,168,4,78);ctx.fillRect(818,168,43,4);ctx.fillRect(857,168,4,78);
+  toilet(728,183);toilet(776,183);toilet(824,183);
+  // Double vanity is fitted to the right wall, not across the entry path.
+  ctx.fillStyle='#777873';ctx.fillRect(844,263,31,78);ctx.fillStyle='#bbb9af';ctx.fillRect(849,268,21,68);
+  ctx.fillStyle='#44433f';ctx.fillRect(856,277,5,5);ctx.fillRect(856,305,5,5);
+  // Wall mirror and sanitary disposal unit make this room visually distinct.
+  ctx.fillStyle='#3f4948';ctx.fillRect(846,180,26,45);ctx.fillStyle='#879795';ctx.fillRect(849,183,20,39);
+  ctx.fillStyle='#676a64';ctx.fillRect(818,286,17,25);ctx.fillStyle='#a7a69d';ctx.fillRect(821,289,11,17);
   // STORAGE: shelving and cabinets hug the walls, boxes sit in front of storage.
   shelf(900,125,65,100);shelf(1035,125,65,100);
   boxObj(908,170,24,22);boxObj(930,205,25,20);
