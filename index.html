@@ -721,8 +721,7 @@ function render(){
    ctx.fillStyle='#555555';ctx.fillRect(1046,236,14,2);ctx.fillRect(1064,236,23,2);
    // A dented step-stool and a hand truck are parked tight to the storage wall, outside the aisle.
    ctx.fillStyle='#4a4a4a';ctx.fillRect(905,319,42,7);ctx.fillRect(910,326,5,4);ctx.fillRect(937,326,5,4);
-   ctx.strokeStyle='#353535';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(1081,245);ctx.lineTo(1081,296);ctx.lineTo(1097,296);ctx.stroke();
-   ctx.fillStyle='#666666';ctx.fillRect(1070,263,22,24);ctx.fillStyle='#b7b7b7';ctx.fillRect(1073,267,16,2);ctx.fillRect(1073,272,11,2);
+
    // Reception: obsolete ticket/visitor procedure, cheap acrylic barrier, and abandoned forms.
    ctx.fillStyle='#353535';ctx.fillRect(535,470,43,25);ctx.fillStyle='#bdbdbd';ctx.fillRect(538,473,37,19);
    ctx.fillStyle='#5d5d5d';ctx.fillRect(542,477,28,2);ctx.fillRect(542,482,22,2);ctx.fillRect(542,487,26,2);
@@ -733,11 +732,7 @@ function render(){
    ctx.fillStyle='#e0e0e0';ctx.fillRect(748,464,25,9);ctx.strokeStyle='#777777';ctx.lineWidth=1;ctx.strokeRect(748,464,25,9);
    ctx.fillStyle='#777777';ctx.fillRect(752,467,15,1);ctx.fillRect(752,470,18,1);
    // Work floor: wall-mounted KPI board, shift rota, and rows of tired little status lights.
-   ctx.fillStyle='#303030';ctx.fillRect(1071,438,29,44);ctx.fillStyle='#b8b8b8';ctx.fillRect(1074,441,23,38);
-   ctx.fillStyle='#595959';ctx.fillRect(1077,445,17,2);ctx.fillRect(1077,450,13,2);ctx.fillRect(1077,455,18,2);
-   for(let n=0;n<4;n++){ctx.fillStyle=n===3?'#555555':'#777777';ctx.fillRect(1077,462+n*3,4,2);ctx.fillRect(1083,462+n*3,11-n,2);}
-   ctx.fillStyle='#3c3c3c';ctx.fillRect(815,444,25,30);ctx.fillStyle='#bdbdbd';ctx.fillRect(818,447,19,24);
-   ctx.fillStyle='#696969';ctx.fillRect(821,451,13,2);ctx.fillRect(821,456,10,2);ctx.fillRect(821,461,13,2);ctx.fillRect(821,466,8,2);
+   // Existing workstation cubicles and room signs stay visually dominant; no boards are layered over them.
    // Break room: scratched microwave face, disposable cups, and a passive-aggressive notice.
    ctx.fillStyle='#444444';ctx.fillRect(269,490,22,1);ctx.fillRect(273,486,13,1);
    ctx.fillStyle='#333333';ctx.fillRect(105,631,34,13);ctx.fillStyle='#bcbcbc';ctx.fillRect(108,634,28,2);
@@ -816,11 +811,9 @@ function render(){
    ctx.fillStyle='#bdbdbd';ctx.fillRect(1011,312,27,2);ctx.fillRect(1011,317,20,2);
    ctx.strokeStyle='#333333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(1008,330);ctx.lineTo(1008,338);ctx.moveTo(1042,330);ctx.lineTo(1042,338);ctx.stroke();
    ctx.fillStyle='#292929';ctx.beginPath();ctx.arc(1012,339,3,0,Math.PI*2);ctx.arc(1038,339,3,0,Math.PI*2);ctx.fill();
-   // BREAK ROOM: cheap kitchenette equipment and workplace-mandated messaging.
-   wallBoard(205,468,50,30,'BREAK POLICY');printer(304,474,27,20);
-   ctx.fillStyle='#444444';ctx.fillRect(151,468,36,30);ctx.fillStyle='#a9a9a9';ctx.fillRect(155,472,28,20);
-   ctx.fillStyle='#393939';ctx.fillRect(158,475,22,14);ctx.fillStyle='#777777';ctx.fillRect(161,478,16,8);
-   ctx.fillStyle='#d2d2d2';ctx.fillRect(166,481,6,3);ctx.fillStyle='#333333';ctx.fillRect(182,477,2,5);
+   // BREAK ROOM: the existing noticeboard owns this wall; keep the counter and title unobstructed.
+   printer(304,474,27,20);
+
    // RECEPTION: staff-only phone extension, document rack, and a scanner on the desk.
    // Existing desk phone and counter paperwork already serve reception; keep its central doorway lane empty.
    ctx.fillStyle='#333333';ctx.fillRect(733,480,22,7);ctx.fillStyle='#bcbcbc';ctx.fillRect(736,481,16,3);
@@ -835,6 +828,10 @@ function render(){
     ctx.fillStyle='#414141';ctx.fillRect(p[0]+4,p[1]+3,1,2);ctx.fillRect(p[0]+7,p[1]+3,1,2);
    });
    floorMat(102,343,43,7);floorMat(820,640,53,7);floorMat(1027,640,53,7);
+   // Wear stays on exposed floor, not over furniture, room titles, or door thresholds.
+   ctx.save();ctx.globalAlpha=.14;ctx.fillStyle='#252525';
+   [[230,235,44,2],[305,244,25,2],[550,335,31,2],[745,337,38,2],[920,340,42,2],[150,625,25,2],[390,610,23,2],[565,620,28,2],[735,615,31,2],[920,630,35,2],[1020,540,20,2]].forEach(a=>ctx.fillRect(...a));
+   ctx.restore();
    // Small worn labels on existing furniture make the props feel maintained by inventory number.
    ctx.fillStyle='#d6d6d6';ctx.fillRect(137,288,17,5);ctx.fillRect(422,288,17,5);
    ctx.fillStyle='#424242';ctx.font='4px monospace';ctx.fillText('FILE 04',138,292);ctx.fillText('FILE 09',423,292);
