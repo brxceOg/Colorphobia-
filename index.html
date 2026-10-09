@@ -195,7 +195,7 @@ function collide(x,y){
  if(state==='office'){
   // Room walls, leaving intentional doorway gaps.
   box(90,100,400,5);box(90,355,160,5);box(310,355,180,5);box(90,100,5,260);box(485,100,5,80);box(485,235,5,125);
-  box(540,100,300,5);box(540,355,110,5);box(720,355,120,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,115);
+  box(540,100,300,5);box(540,355,160,5);box(770,355,70,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,115);
   box(890,100,220,5);box(890,355,220,5);box(890,100,5,260);box(1105,100,5,260);
   box(90,430,160,5);box(310,430,130,5);box(90,655,350,5);box(90,430,5,225);box(435,430,5,70);box(435,545,5,110);
   box(490,430,210,5);box(770,430,340,5);box(490,655,620,5);box(490,430,5,225);box(1105,430,5,225);
@@ -297,12 +297,11 @@ function render(){
 
   // Door openings in room walls / corridor connections
   ctx.fillStyle='#d2cbbd';
-  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[650,360,70,70]].forEach(d=>ctx.fillRect(...d));
+  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
 
-  // The reception room's bottom doorway is centered on x=685 and lines up exactly with the collision gap below.
-  // It is a real walkable connection between reception and the main hall.
-  ctx.fillStyle='#4b4741';ctx.fillRect(650,360,70,8);
-  ctx.fillStyle='#b8b0a2';ctx.fillRect(658,363,54,3);
+  // Reception-to-work-floor doorway aligns with both collision gaps (x=700..770).
+  ctx.fillStyle='#4b4741';ctx.fillRect(700,360,70,8);
+  ctx.fillStyle='#b8b0a2';ctx.fillRect(708,363,54,3);
   // Room-specific environmental props.
   function px(x,y,w,h,base,detail){
    ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
@@ -444,6 +443,19 @@ function render(){
    if(r!==currentRoom) ctx.fillRect(r.x+5,r.y+5,r.w-10,r.h-10);
   });
  }
+
+ // Room-identification signs mounted just outside each doorway, on the corridor side.
+ function doorSign(x,y,label,vertical=false){
+  ctx.save();ctx.fillStyle='#756b5e';ctx.fillRect(x,y,vertical?24:70,vertical?48:20);
+  ctx.strokeStyle='#191817';ctx.lineWidth=2;ctx.strokeRect(x,y,vertical?24:70,vertical?48:20);
+  ctx.fillStyle='#eee9dc';ctx.font='bold 7px monospace';ctx.textAlign='center';
+  if(vertical){label.split(' ').forEach((word,i)=>ctx.fillText(word,x+12,y+12+i*9));}else ctx.fillText(label,x+35,y+13);
+  ctx.restore();
+ }
+ doorSign(493,190,'OFFICE');
+ doorSign(792,200,'STORAGE');
+ doorSign(270,373,'BREAK ROOM',true);
+ doorSign(718,373,'WORK FLOOR',true);
 
  // Player
  ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
