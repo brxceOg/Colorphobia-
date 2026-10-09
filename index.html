@@ -542,7 +542,7 @@ function render(){
    // Small environmental details
   ctx.fillStyle='#a3a3a3';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
-  ctx.fillStyle='#999999';ctx.fillRect(102,300,35,4);ctx.fillRect(108,306,22,3);
+  ctx.fillStyle='#999999';// removed stray floating lines
  } else {
   ctx.fillStyle='#e2e2e2';ctx.fillRect(90,100,1020,560);
   ctx.strokeStyle='#181818';ctx.lineWidth=5;ctx.strokeRect(90,100,1020,560);
@@ -597,9 +597,9 @@ function render(){
    });
    keyboard(196,183,26);papers(148,180);keyboard(360,183,24);papers(332,180);
    // Kitchenette backsplash, paper-towel dispenser and cabinet seams establish function.
-   ctx.fillStyle='#555555';ctx.fillRect(158,460,145,4);
-   ctx.fillStyle='#b8b8b8';ctx.fillRect(168,443,28,15);ctx.strokeStyle='#343434';ctx.strokeRect(168,443,28,15);
-   ctx.fillStyle='#777777';ctx.fillRect(172,447,20,2);ctx.fillRect(172,451,15,2);
+   ctx.fillStyle='#555555';// removed stray horizontal artifact
+   ctx.fillStyle='#b8b8b8';// removed misplaced paper-like artifactctx.strokeStyle='#343434';ctx.strokeRect(168,443,28,15);
+   ctx.fillStyle='#777777';// removed misplaced artifact lines
    // Light scuffs near doorways; restrained enough not to compete with navigation.
    ctx.fillStyle='rgba(35,35,35,.2)';
    // Decorative scuff marks removed; these looked like stray floating lines.
