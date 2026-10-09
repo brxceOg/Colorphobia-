@@ -292,10 +292,22 @@ function afterPlayer(){
  enemyTurn();
 }
 function drawBattle(){
- ctx.fillStyle='#d2d2d2';ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#505050';ctx.fillRect(W/2-70,H/2-95,140,130);
- ctx.strokeStyle='#171717';ctx.lineWidth=3;ctx.strokeRect(W/2-70,H/2-95,140,130);
- ctx.fillStyle='#e9e9e9';ctx.fillRect(W/2-38,H/2-55,12,12);ctx.fillRect(W/2+26,H/2-55,12,12);ctx.fillStyle='#171717';ctx.fillRect(W/2-34,H/2-51,4,4);ctx.fillRect(W/2+30,H/2-51,4,4);
+ // Textured monochrome encounter stage; red is intentionally withheld for later perception events.
+ ctx.fillStyle='#252525';ctx.fillRect(0,0,W,H);ctx.fillStyle='#3b3b3b';ctx.fillRect(0,0,W,H*.58);
+ for(let y=20;y<H*.58;y+=24){ctx.strokeStyle='#505050';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+ for(let x=0;x<W;x+=72){ctx.strokeStyle='rgba(0,0,0,.28)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H*.58);ctx.stroke();}
+ ctx.fillStyle='#686868';ctx.fillRect(0,H*.58,W,H*.42);
+ for(let y=H*.58,row=0;y<H;y+=28,row++)for(let x=(row%2)*28;x<W;x+=56){ctx.fillStyle='#747474';ctx.fillRect(x+1,y+1,54,26);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(x+2,y+24,52,2);}
+ const ex=W/2,ey=H/2-26;
+ ctx.fillStyle='rgba(0,0,0,.36)';ctx.beginPath();ctx.ellipse(ex,ey+60,72,16,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#555555';ctx.strokeStyle='#171717';ctx.lineWidth=4;ctx.beginPath();
+ ctx.moveTo(ex-60,ey-30);ctx.lineTo(ex-48,ey-61);ctx.lineTo(ex-19,ey-72);ctx.lineTo(ex+8,ey-65);ctx.lineTo(ex+37,ey-73);ctx.lineTo(ex+58,ey-48);ctx.lineTo(ex+63,ey-10);ctx.lineTo(ex+45,ey+22);ctx.lineTo(ex+13,ey+39);ctx.lineTo(ex-26,ey+32);ctx.lineTo(ex-54,ey+12);ctx.closePath();ctx.fill();ctx.stroke();
+ ctx.fillStyle='#858585';ctx.beginPath();ctx.moveTo(ex-37,ey-34);ctx.lineTo(ex-15,ey-50);ctx.lineTo(ex+10,ey-44);ctx.lineTo(ex+36,ey-49);ctx.lineTo(ex+44,ey-22);ctx.lineTo(ex+25,ey+2);ctx.lineTo(ex-9,ey+8);ctx.lineTo(ex-35,ey-8);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#ededed';ctx.beginPath();ctx.ellipse(ex+5,ey-19,19,23,-.12,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#222222';ctx.lineWidth=3;ctx.stroke();
+ ctx.fillStyle='#252525';ctx.beginPath();ctx.ellipse(ex+8,ey-18,7,13,.12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f4f4f4';ctx.fillRect(ex+10,ey-24,3,4);
+ ctx.fillStyle='#4a4a4a';ctx.strokeStyle='#171717';ctx.lineWidth=2;
+ [[ex-56,ey-39,ex-77,ey-52,ex-65,ey-22],[ex+39,ey-51,ex+61,ey-67,ex+54,ey-35],[ex-23,ey+27,ex-38,ey+48,ex-5,ey+34]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[2],p[3]);ctx.lineTo(p[4],p[5]);ctx.closePath();ctx.fill();ctx.stroke();});
+ const vg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,Math.max(W,H)*.72);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
  drawText(20,105,'RED EYEMITE',16);drawText(20,128,`HP ${battle.hp} / ${battle.max}`,12);
  drawText(20,H-180,`YOU  HP ${player.hp}/${player.maxhp}`,13);
  drawText(20,H-158,`STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`,11);
@@ -520,7 +532,73 @@ function render(){
   ctx.strokeStyle='#181818';ctx.lineWidth=5;ctx.strokeRect(90,100,1020,560);
  }
 
- // Hidden-room masks share the exact footprints used to draw each floor.
+ // VISUAL PASS: office-specific dressing, layered lighting, wall fixtures and material detail.
+  // Visual-only additions: all existing room footprints, collision, stats, flags and combat stay intact.
+  function lamp(x,y,w){
+   ctx.fillStyle='rgba(245,245,245,.10)';ctx.fillRect(x-8,y-8,w+16,24);
+   ctx.fillStyle='#343434';ctx.fillRect(x,y,w,7);ctx.fillStyle='#d0d0d0';ctx.fillRect(x+3,y+2,w-6,3);
+   ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(x+5,y+3,w-10,1);
+  }
+  function grille(x,y,w){
+   ctx.fillStyle='#303030';ctx.fillRect(x,y,w,10);ctx.fillStyle='#777777';
+   for(let i=0;i<5;i++)ctx.fillRect(x+4+i*(w-8)/5,y+2,Math.max(1,(w-18)/5),1);
+   ctx.strokeStyle='#171717';ctx.lineWidth=1;ctx.strokeRect(x,y,w,10);
+  }
+  function notice(x,y,w,h,lines){
+   ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(x+3,y+4,w,h);
+   ctx.fillStyle='#555555';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#242424';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h);
+   ctx.fillStyle='#c2c2c2';ctx.fillRect(x+3,y+3,w-6,h-6);ctx.fillStyle='#646464';
+   lines.forEach((n,i)=>ctx.fillRect(x+6,y+6+i*5,Math.max(3,Math.min(w-12,n)),1));
+  }
+  function drawerFronts(x,y,w,count){
+   for(let i=0;i<count;i++){const yy=y+i*12;ctx.fillStyle='#666666';ctx.fillRect(x,yy,w,10);ctx.fillStyle='#858585';ctx.fillRect(x+2,yy+2,w-4,1);ctx.fillStyle='#bdbdbd';ctx.fillRect(x+w/2-4,yy+4,8,2);ctx.fillStyle='#383838';ctx.fillRect(x+3,yy+9,w-6,1);}
+  }
+  function papers(x,y){
+   ctx.fillStyle='#bdbdbd';ctx.fillRect(x,y,15,10);ctx.fillStyle='#777777';ctx.fillRect(x+2,y+2,10,1);ctx.fillRect(x+2,y+5,7,1);
+   ctx.fillStyle='#414141';ctx.fillRect(x+18,y+1,7,8);ctx.fillStyle='#a6a6a6';ctx.fillRect(x+20,y+3,3,3);
+  }
+  function keyboard(x,y,w){
+   ctx.fillStyle='#303030';ctx.fillRect(x,y,w,7);ctx.fillStyle='#999999';
+   for(let r=0;r<2;r++)for(let k=0;k<Math.floor((w-4)/4);k++)ctx.fillRect(x+2+k*4,y+1+r*3,2,1);
+  }
+  if(state==='office'){
+   // Repeating ceiling fixtures create a coherent office grid and pools of flat fluorescent light.
+   [[120,75,72],[340,75,72],[560,75,72],[780,75,72],[1000,75,72],
+    [115,405,62],[325,405,62],[530,405,62],[740,405,62],[945,405,62]].forEach(a=>lamp(...a));
+   grille(250,108,42);grille(955,108,42);grille(145,438,36);
+   notice(292,116,42,28,[25,30,20]);notice(940,116,42,28,[28,22,30]);notice(96,438,34,22,[20,24]);
+   // Filing cabinets now read as drawer units instead of featureless gray blocks.
+   drawerFronts(129,282,47,4);drawerFronts(414,282,47,4);drawerFronts(904,282,52,3);drawerFronts(1039,282,52,3);
+   // Reception desk paperwork and keyboard are deliberately placed on the work surface.
+   papers(730,454);keyboard(745,476,24);
+   // Workstation screens use layered bezels, reflected light and restrained terminal lines.
+   [[188,133],[355,135],[864,462],[954,462],[1044,462],[864,572],[954,572],[1044,572]].forEach(p=>{
+    const x=p[0],y=p[1];ctx.fillStyle='rgba(0,0,0,.24)';ctx.fillRect(x+3,y+3,28,20);
+    ctx.fillStyle='#252525';ctx.fillRect(x,y,28,20);ctx.strokeStyle='#151515';ctx.lineWidth=2;ctx.strokeRect(x,y,28,20);
+    ctx.fillStyle='#888888';ctx.fillRect(x+3,y+3,22,13);ctx.fillStyle='#c4c4c4';
+    ctx.fillRect(x+5,y+5,14,1);ctx.fillRect(x+5,y+8,10,1);ctx.fillRect(x+5,y+11,16,1);
+    ctx.fillStyle='#404040';ctx.fillRect(x+12,y+20,4,7);ctx.fillRect(x+8,y+27,12,3);
+   });
+   keyboard(196,183,26);papers(148,180);keyboard(360,183,24);papers(332,180);
+   // Kitchenette backsplash, paper-towel dispenser and cabinet seams establish function.
+   ctx.fillStyle='#555555';ctx.fillRect(158,460,145,4);
+   ctx.fillStyle='#b8b8b8';ctx.fillRect(168,443,28,15);ctx.strokeStyle='#343434';ctx.strokeRect(168,443,28,15);
+   ctx.fillStyle='#777777';ctx.fillRect(172,447,20,2);ctx.fillRect(172,451,15,2);
+   // Light scuffs near doorways; restrained enough not to compete with navigation.
+   ctx.fillStyle='rgba(35,35,35,.2)';
+   [[215,382,22,2],[224,386,12,1],[472,390,18,2],[700,389,24,1],[818,390,15,2],[410,414,13,2],[870,414,20,1]].forEach(a=>ctx.fillRect(...a));
+   // Subtle vignette gives the sterile rooms a sense of enclosure.
+   const vg=ctx.createRadialGradient(600,380,180,600,380,690);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(.72,'rgba(0,0,0,.06)');vg.addColorStop(1,'rgba(0,0,0,.38)');
+   ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
+  } else if(state==='hospital'){
+   // The hospital/industrial passage uses concrete seams and repeated ceiling lights.
+   for(let yy=130;yy<630;yy+=96){ctx.fillStyle='#b8b8b8';ctx.fillRect(100,yy,1000,3);ctx.fillStyle='#858585';ctx.fillRect(100,yy+4,1000,1);}
+   [[180,112,110],[430,112,110],[680,112,110],[930,112,110]].forEach(a=>lamp(...a));
+   for(let xx=150;xx<1080;xx+=185){ctx.fillStyle='#777777';ctx.fillRect(xx,605,82,28);ctx.strokeStyle='#333333';ctx.lineWidth=2;ctx.strokeRect(xx,605,82,28);ctx.fillStyle='#bcbcbc';ctx.fillRect(xx+6,610,70,3);ctx.fillStyle='#555555';ctx.fillRect(xx+8,618,66,2);}
+   const vg=ctx.createRadialGradient(600,380,160,600,380,700);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.35)');ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
+  }
+
+  // Hidden-room masks share the exact footprints used to draw each floor.
   if(state==='office'){
    const rooms=[
     [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
