@@ -460,7 +460,7 @@ function render(){
   desk(135,155,145,60);monitor(188,133);
   desk(325,155,100,60);monitor(355,135);
   cabinet(125,275,55,65);cabinet(410,275,55,65);
-  ctx.fillStyle='#646464';ctx.fillRect(205,250,45,4);ctx.fillRect(215,257,25,3);
+  // Removed orphaned horizontal strokes that appeared as floating lines.
 
   // MEN’S RESTROOM: fixtures arranged in clear zones with a wide entrance aisle.
   // Floor tile and a darker border make the room read as a finished washroom.
@@ -540,8 +540,7 @@ function render(){
    cubicle(850,455);cubicle(940,455);cubicle(1030,455);
    cubicle(850,565);cubicle(940,565);cubicle(1030,565);
    // Small environmental details
-  ctx.fillStyle='#a3a3a3';
-  for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
+  // Removed stray floating detail marks; all remaining props are intentional.
   ctx.fillStyle='#999999';// removed stray floating lines
  } else {
   ctx.fillStyle='#e2e2e2';ctx.fillRect(90,100,1020,560);
