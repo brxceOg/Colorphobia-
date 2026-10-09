@@ -761,6 +761,86 @@ function render(){
    // Grime collects under the highest-traffic corners; keep marks faint and off door thresholds.
    ctx.fillStyle='rgba(35,35,35,.12)';
    [[505,474,20,3],[845,642,33,2],[112,420,44,2],[1078,416,24,3],[900,342,30,2],[345,640,36,3]].forEach(a=>ctx.fillRect(...a));
+
+   // BIG READABLE DRESSING PASS: recognizable office equipment, not just tiny marks.
+   // Keep every floor-standing object tight to a wall or on an existing work surface;
+   // the reception lane, restroom entrances, and workstation aisles remain open.
+   function wallFileRack(x,y,w,h){
+    ctx.fillStyle='#292929';ctx.fillRect(x,y,w,h);ctx.fillStyle='#777777';ctx.fillRect(x+3,y+3,w-6,h-6);
+    for(let i=0;i<3;i++){ctx.fillStyle=['#c7c7c7','#a5a5a5','#dedede'][i];ctx.fillRect(x+5+i*7,y+5,5,h-10);ctx.fillStyle='#4b4b4b';ctx.fillRect(x+6+i*7,y+9,3,2);}
+    ctx.strokeStyle='#222222';ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);
+   }
+   function printer(x,y,w=28,h=22){
+    ctx.fillStyle='rgba(0,0,0,.24)';ctx.fillRect(x+2,y+3,w,h);ctx.fillStyle='#4a4a4a';ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='#bdbdbd';ctx.fillRect(x+3,y+3,w-6,7);ctx.fillStyle='#777777';ctx.fillRect(x+5,y+5,w-10,2);
+    ctx.fillStyle='#292929';ctx.fillRect(x+4,y+13,w-8,4);ctx.fillStyle='#dedede';ctx.fillRect(x+7,y+14,w-14,2);
+    ctx.fillStyle='#8d8d8d';ctx.fillRect(x+w-7,y+6,3,3);ctx.strokeStyle='#222222';ctx.strokeRect(x,y,w,h);
+   }
+   function shredder(x,y){
+    ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(x+3,y+4,21,28);ctx.fillStyle='#4b4b4b';ctx.fillRect(x,y,20,28);
+    ctx.fillStyle='#858585';ctx.fillRect(x+3,y+3,14,4);ctx.fillStyle='#242424';ctx.fillRect(x+4,y+10,12,2);
+    ctx.fillStyle='#c7c7c7';ctx.fillRect(x+6,y+17,8,7);ctx.fillStyle='#333333';ctx.fillRect(x+8,y+19,4,3);
+   }
+   function wallPhone(x,y){
+    ctx.fillStyle='#343434';ctx.fillRect(x,y,12,23);ctx.fillStyle='#bdbdbd';ctx.fillRect(x+2,y+3,8,7);
+    ctx.fillStyle='#5a5a5a';for(let i=0;i<3;i++)for(let j=0;j<2;j++)ctx.fillRect(x+3+j*4,y+13+i*3,2,2);
+    ctx.strokeStyle='#242424';ctx.strokeRect(x,y,12,23);
+   }
+   function wallBoard(x,y,w,h,title){
+    ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(x+3,y+4,w,h);ctx.fillStyle='#292929';ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='#c4c4c4';ctx.fillRect(x+3,y+3,w-6,h-6);ctx.fillStyle='#333333';ctx.font='bold 5px monospace';ctx.fillText(title,x+6,y+10);
+    ctx.fillStyle='#737373';for(let i=0;i<Math.floor((h-14)/5);i++){ctx.fillRect(x+6,y+14+i*5,w-12-(i%3)*4,1);}
+    ctx.strokeStyle='#222222';ctx.strokeRect(x,y,w,h);
+   }
+   function floorMat(x,y,w,h){
+    ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(x+3,y+3,w,h);ctx.fillStyle='#777777';ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle='#333333';ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);
+    for(let i=5;i<w-2;i+=6){ctx.fillStyle='#a0a0a0';ctx.fillRect(x+i,y+2,2,h-4);}
+    ctx.fillStyle='#4b4b4b';ctx.fillRect(x+3,y+3,w-6,2);
+   }
+   function cableCoil(x,y){
+    ctx.strokeStyle='#4b4b4b';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,y,7,4,0,0,Math.PI*2);ctx.ellipse(x,y,4,2,0,0,Math.PI*2);ctx.stroke();
+   }
+   function folderPile(x,y){
+    [[0,5,'#a4a4a4'],[3,2,'#d0d0d0'],[6,0,'#888888']].forEach(a=>{ctx.fillStyle=a[2];ctx.fillRect(x+a[0],y+a[1],18,9);ctx.strokeStyle='#444444';ctx.lineWidth=1;ctx.strokeRect(x+a[0],y+a[1],18,9);ctx.fillStyle='#555555';ctx.fillRect(x+a[0]+3,y+a[1]+3,9,1);});
+   }
+   // PRIVATE OFFICE: paper overflow, filing reference rack, and a printer nobody services.
+   wallFileRack(300,276,29,43);printer(365,179,25,19);folderPile(338,191);
+   wallBoard(185,300,49,34,'CASE LOAD');cableCoil(385,203);
+   // RESTROOMS: wall-mounted soap/paper dispensers and maintenance notices; no floor clutter.
+   wallBoard(594,309,35,28,'CLEAN');wallPhone(670,294);
+   wallBoard(730,309,34,28,'CHECK');wallPhone(869,294);
+   // RECORDS: a large label board and a wheeled archive cart parked along the north/east wall.
+   wallBoard(969,116,47,31,'RETENTION');wallFileRack(970,262,27,49);
+   ctx.fillStyle='#393939';ctx.fillRect(1004,305,42,25);ctx.fillStyle='#777777';ctx.fillRect(1008,309,34,16);
+   ctx.fillStyle='#bdbdbd';ctx.fillRect(1011,312,27,2);ctx.fillRect(1011,317,20,2);
+   ctx.strokeStyle='#333333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(1008,330);ctx.lineTo(1008,338);ctx.moveTo(1042,330);ctx.lineTo(1042,338);ctx.stroke();
+   ctx.fillStyle='#292929';ctx.beginPath();ctx.arc(1012,339,3,0,Math.PI*2);ctx.arc(1038,339,3,0,Math.PI*2);ctx.fill();
+   // BREAK ROOM: cheap kitchenette equipment and workplace-mandated messaging.
+   wallBoard(205,440,50,30,'BREAK POLICY');printer(304,474,27,20);
+   ctx.fillStyle='#444444';ctx.fillRect(151,468,36,30);ctx.fillStyle='#a9a9a9';ctx.fillRect(155,472,28,20);
+   ctx.fillStyle='#393939';ctx.fillRect(158,475,22,14);ctx.fillStyle='#777777';ctx.fillRect(161,478,16,8);
+   ctx.fillStyle='#d2d2d2';ctx.fillRect(166,481,6,3);ctx.fillStyle='#333333';ctx.fillRect(182,477,2,5);
+   // RECEPTION: staff-only phone extension, document rack, and a scanner on the desk.
+   wallPhone(658,443);wallFileRack(620,445,25,25);
+   ctx.fillStyle='#333333';ctx.fillRect(733,480,22,7);ctx.fillStyle='#bcbcbc';ctx.fillRect(736,481,16,3);
+   ctx.fillStyle='#5d5d5d';ctx.fillRect(739,485,10,1);
+   // WORK FLOOR: every workstation gets a paper trail and a practical office object on its desk.
+   folderPile(868,488);printer(911,477,23,18);folderPile(958,488);printer(1001,477,23,18);
+   folderPile(868,598);printer(911,587,23,18);folderPile(958,598);printer(1001,587,23,18);
+   // The aisle is deliberately left empty: no bins, chairs, cables, or carts cross this strip.
+   // More small evidence of neglect: wall-mounted cable sockets and worn floor transition strips.
+   [[470,480],[470,590],[830,490],[830,550],[830,600],[880,365],[940,365]].forEach(p=>{
+    ctx.fillStyle='#343434';ctx.fillRect(p[0],p[1],11,8);ctx.fillStyle='#9a9a9a';ctx.fillRect(p[0]+2,p[1]+2,7,4);
+    ctx.fillStyle='#414141';ctx.fillRect(p[0]+4,p[1]+3,1,2);ctx.fillRect(p[0]+7,p[1]+3,1,2);
+   });
+   floorMat(102,343,43,7);floorMat(820,640,53,7);floorMat(1027,640,53,7);
+   // Small worn labels on existing furniture make the props feel maintained by inventory number.
+   ctx.fillStyle='#d6d6d6';ctx.fillRect(137,288,17,5);ctx.fillRect(422,288,17,5);
+   ctx.fillStyle='#424242';ctx.font='4px monospace';ctx.fillText('FILE 04',138,292);ctx.fillText('FILE 09',423,292);
+   ctx.fillStyle='#d6d6d6';ctx.fillRect(906,262,20,5);ctx.fillRect(1041,262,20,5);
+   ctx.fillStyle='#424242';ctx.fillText('A-17',908,266);ctx.fillText('B-03',1043,266);
+
    // Subtle vignette gives the sterile rooms a sense of enclosure.
    const vg=ctx.createRadialGradient(600,380,180,600,380,690);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(.72,'rgba(0,0,0,.06)');vg.addColorStop(1,'rgba(0,0,0,.38)');
    ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
