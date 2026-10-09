@@ -220,7 +220,7 @@ function world(){
   
  }
  // player
- ctx.fillStyle='#181716';ctx.fillRect(player.x-9,player.y-13,18,26);ctx.fillStyle='#d7d7d7';ctx.fillRect(player.x-6,player.y-9,12,9);ctx.fillStyle='#777777';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
+ drawPlayer();
  if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
 }
 
