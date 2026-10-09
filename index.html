@@ -188,18 +188,18 @@ function world(){
   wall(0,65,W,10); wall(0,H-145,W,12);
   wall(30,120,210,18); wall(30,120,18,150); wall(222,120,18,150);
   wall(W-230,120,190,18); wall(W-48,120,18,150);
-  ctx.fillStyle='#eee9dc';ctx.fillRect(310,105,100,65);ctx.strokeStyle='#181716';ctx.strokeRect(310,105,100,65);drawText(325,140,'DESK',14);
-  ctx.fillStyle='#b22';ctx.fillRect(W-115,H-215,55,55);drawText(W-112,H-220,'DOOR',11);
-  ctx.fillStyle='#eee9dc';ctx.fillRect(260,250,70,45);ctx.strokeStyle='#181716';ctx.strokeRect(260,250,70,45);drawText(272,277,'SINK',11);
-  if(!pillsFound){ctx.fillStyle='#b22';ctx.fillRect(455,210,10,16);ctx.fillRect(470,210,10,16);drawText(445,195,'?',11)}
-  drawText(20,92,'OFFICE',12);
+  ctx.fillStyle='#eee9dc';ctx.fillRect(310,105,100,65);ctx.strokeStyle='#181716';ctx.strokeRect(310,105,100,65);
+  ctx.fillStyle='#b22';ctx.fillRect(W-115,H-215,55,55);
+  ctx.fillStyle='#eee9dc';ctx.fillRect(260,250,70,45);ctx.strokeStyle='#181716';ctx.strokeRect(260,250,70,45);
+  if(!pillsFound){ctx.fillStyle='#b22';ctx.fillRect(455,210,10,16);ctx.fillRect(470,210,10,16);}
+  
  }else{
   wall(0,65,W,10); wall(0,H-145,W,12);
   wall(40,120,150,18);wall(W-190,120,150,18);
   // industrial corridor
   for(let x=220;x<W-220;x+=75){ctx.fillStyle='#eee9dc';ctx.fillRect(x,180,38,100);ctx.strokeStyle='#181716';ctx.strokeRect(x,180,38,100);ctx.fillStyle='#b22';ctx.fillRect(x+8,195,22,70)}
-  ctx.fillStyle='#b22';ctx.fillRect(W-80,220,40,80);drawText(W-110,205,'INDUSTRIAL',11);
-  drawText(20,92,'HOSPITAL / INDUSTRIAL WING',12);
+  ctx.fillStyle='#b22';ctx.fillRect(W-80,220,40,80);
+  
  }
  // player
  ctx.fillStyle='#181716';ctx.fillRect(player.x-9,player.y-13,18,26);ctx.fillStyle='#eee9dc';ctx.fillRect(player.x-6,player.y-9,12,9);ctx.fillStyle='#b22';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
@@ -216,10 +216,10 @@ function collide(x,y){
   box(90,100,400,5);box(90,355,160,5);box(310,355,180,5);box(90,100,5,260);box(485,100,5,80);box(485,235,5,125);
   box(540,100,300,5);box(540,355,160,5);box(770,355,70,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,115);
   box(890,100,220,5);box(890,355,220,5);box(890,100,5,260);box(1105,100,5,260);
-  box(90,430,160,5);box(310,430,130,5);box(90,655,350,5);box(90,430,5,225);box(435,430,5,70);box(435,545,5,110);
+  box(90,430,350,5);box(90,655,350,5);box(90,430,5,225);box(435,430,5,70);box(435,545,5,110);
   box(490,430,210,5);box(770,430,340,5);box(490,655,620,5);box(490,430,5,225);box(1105,430,5,225);
   // furniture
-  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[135,490,125,55],[305,505,75,45],[550,490,145,65],[770,500,125,55],[930,495,110,95]].forEach(o=>box(...o));
+  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,463,150,45],[690,463,150,45],[870,463,150,45],[510,572,150,45],[690,572,150,45],[870,572,150,45],[1040,465,48,56]].forEach(o=>box(...o));
  } else {
   box(90,100,1020,5);box(90,655,1020,5);box(90,100,5,560);box(1105,100,5,560);
  }
@@ -302,22 +302,24 @@ function render(){
  if(state==='office'){
   // Chapter 1: compact office suite with a short corridor.
   const rooms=[
-   [90,100,400,260,'OFFICE'],
-   [540,100,300,260,'RECEPTION'],
-   [890,100,220,260,'STORAGE'],
-   [90,430,350,230,'BREAK ROOM'],
-   [490,430,620,230,'WORK FLOOR']
+   [90,100,400,260],
+   [540,100,300,260],
+   [890,100,220,260],
+   [90,430,350,230],
+   [490,430,620,230]
   ];
   rooms.forEach(r=>{
    ctx.fillStyle='#e8e2d5';ctx.fillRect(r[0],r[1],r[2],r[3]);
    ctx.strokeStyle='#191817';ctx.lineWidth=5;ctx.strokeRect(r[0],r[1],r[2],r[3]);
-   drawText(r[0]+14,r[1]+25,r[4],11);
   });
 
   // Door openings in room walls / corridor connections
   ctx.fillStyle='#d2cbbd';
-  [[470,180,70,55],[840,190,50,55],[250,360,60,70],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
+  [[470,180,70,55],[840,190,50,55],[430,500,8,45],[700,360,70,70]].forEach(d=>ctx.fillRect(...d));
 
+  // Break room entry is on the right wall; north wall stays closed.
+  ctx.fillStyle='#4b4741';ctx.fillRect(430,500,8,45);
+  ctx.fillStyle='#b8b0a2';ctx.fillRect(433,506,3,33);
   // Reception-to-work-floor doorway aligns with both collision gaps (x=700..770).
   ctx.fillStyle='#4b4741';ctx.fillRect(700,360,70,8);
   ctx.fillStyle='#b8b0a2';ctx.fillRect(708,363,54,3);
@@ -398,9 +400,6 @@ function render(){
   // Draw these after the desk so they are visibly on top of it, not behind it.
   phone(610,164);bell(704,164);
   chair(630,225,58,38);
-  drawText(568,125,'ENTRANCE',10);
-  drawText(585,330,'VISITOR AREA',8);
-  drawText(663,379,'HALL EXIT',8);
 
   // OFFICE: desks face inward, monitors sit on desk surfaces, cabinets against walls.
   desk(135,155,145,60);monitor(188,133);
@@ -413,7 +412,6 @@ function render(){
   boxObj(925,170,28,24);boxObj(960,205,30,22);
   boxObj(1025,165,35,27);
   cabinet(915,275,75,50);boxObj(1005,275,55,45);
-  drawText(915,115,'SUPPLIES',8);
 
   // BREAK ROOM: kitchenette on the left, communal table centered, and clear circulation.
   fridge(108,465);
@@ -437,8 +435,6 @@ function render(){
   // Bin beside the kitchenette, away from the walking lane.
   ctx.fillStyle='#565650';ctx.fillRect(112,590,28,35);
   ctx.fillStyle='#85847b';ctx.fillRect(109,588,34,5);
-  drawText(160,425,'KITCHEN',8);
-  drawText(315,430,'NOTICE BOARD',7);
 
   // WORK FLOOR: six organized call-centre cubicles in two rows.
   // Low partitions frame each station; each desk has a monitor, keyboard and chair.
@@ -459,18 +455,13 @@ function render(){
   ctx.fillStyle='#393936';ctx.fillRect(1045,471,38,18);
   ctx.fillStyle='#c7c2b7';ctx.fillRect(1050,475,28,7);
   ctx.fillStyle='#8b887e';ctx.fillRect(1051,486,25,2);
-  drawText(1038,455,'PRINTER',7);
-  drawText(512,445,'CALL CENTRE',8);
   // Small environmental details
   ctx.fillStyle='#aaa294';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
   ctx.fillStyle='#9f988c';ctx.fillRect(102,300,35,4);ctx.fillRect(108,306,22,3);
-  drawText(470,392,'HALL',9);
-  drawText(1040,392,'LOCKED',9);
  } else {
   ctx.fillStyle='#e8e2d5';ctx.fillRect(90,100,1020,560);
   ctx.strokeStyle='#191817';ctx.lineWidth=5;ctx.strokeRect(90,100,1020,560);
-  drawText(112,130,'HOSPITAL / INDUSTRIAL ACCESS',11);
  }
 
  // Room visibility: unexplored rooms are black; corridors remain visible.
