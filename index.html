@@ -444,18 +444,23 @@ function render(){
   });
  }
 
- // Room-identification signs mounted just outside each doorway, on the corridor side.
+ // Room signs are mounted against the room-side wall beside each doorway,
+ // rather than floating out in the corridor. They remain visible over the dark-room overlay.
  function doorSign(x,y,label,vertical=false){
-  ctx.save();ctx.fillStyle='#756b5e';ctx.fillRect(x,y,vertical?24:70,vertical?48:20);
-  ctx.strokeStyle='#191817';ctx.lineWidth=2;ctx.strokeRect(x,y,vertical?24:70,vertical?48:20);
+  ctx.save();
+  ctx.fillStyle='#756b5e';ctx.fillRect(x,y,vertical?24:62,vertical?38:18);
+  ctx.strokeStyle='#191817';ctx.lineWidth=2;ctx.strokeRect(x,y,vertical?24:62,vertical?38:18);
   ctx.fillStyle='#eee9dc';ctx.font='bold 7px monospace';ctx.textAlign='center';
-  if(vertical){label.split(' ').forEach((word,i)=>ctx.fillText(word,x+12,y+12+i*9));}else ctx.fillText(label,x+35,y+13);
+  if(vertical){label.split(' ').forEach((word,i)=>ctx.fillText(word,x+12,y+11+i*9));}
+  else ctx.fillText(label,x+31,y+12);
   ctx.restore();
  }
- doorSign(493,190,'OFFICE');
- doorSign(792,200,'STORAGE');
- doorSign(270,373,'BREAK ROOM',true);
- doorSign(718,373,'WORK FLOOR',true);
+ // Office door is on the east wall; Storage door on the west wall.
+ doorSign(462,235,'OFFICE',true);
+ doorSign(842,240,'STORAGE',true);
+ // South-wall door signs sit just inside each room, beside the openings.
+ doorSign(270,333,'BREAK ROOM',true);
+ doorSign(720,333,'WORK FLOOR',true);
 
  // Player
  ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
