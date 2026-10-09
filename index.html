@@ -565,8 +565,8 @@ function render(){
     ctx.fillStyle='#bcbcbc';ctx.fillRect(x+2,y+2,w-4,13);ctx.fillStyle='#444444';ctx.font='bold 7px monospace';ctx.textAlign='center';ctx.fillText(label,x+w/2,y+11);ctx.textAlign='left';
     ctx.strokeStyle='#242424';ctx.lineWidth=1;ctx.strokeRect(x,y,w,17);
    }
-   plaque(270,105,72,'PRIVATE OFFICE');plaque(585,150,66,'MEN');plaque(760,150,76,'WOMEN');
-   plaque(946,105,72,'RECORDS');plaque(188,435,70,'BREAK ROOM');plaque(600,435,88,'RECEPTION');plaque(914,435,92,'WORKSTATIONS');
+   plaque(155,105,72,'PRIVATE OFFICE');plaque(585,150,66,'MEN');plaque(760,150,76,'WOMEN');
+   plaque(1010,105,72,'RECORDS');plaque(188,435,70,'BREAK ROOM');plaque(600,435,88,'RECEPTION');plaque(914,435,92,'WORKSTATIONS');
    // Soft pools of fluorescent light: subtle, cold and entirely grayscale.
    [[255,205,150],[600,240,135],[800,240,120],[970,520,180],[300,545,170]].forEach(p=>{
     const g=ctx.createRadialGradient(p[0],p[1],8,p[0],p[1],p[2]);g.addColorStop(0,'rgba(255,255,255,.11)');g.addColorStop(1,'rgba(255,255,255,0)');
@@ -580,9 +580,9 @@ function render(){
    }
    paperStack(230,171,23,15);paperStack(367,171,19,13);paperStack(741,457,15,11);paperStack(976,478,16,10);
    // A wall clock with a dull face and heavy casing reinforces the dead office atmosphere.
-   ctx.fillStyle='#333333';ctx.beginPath();ctx.arc(454,116,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c9c9c9';ctx.beginPath();ctx.arc(454,116,10,0,Math.PI*2);ctx.fill();
-   ctx.strokeStyle='#454545';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(454,116);ctx.lineTo(454,109);ctx.moveTo(454,116);ctx.lineTo(460,119);ctx.stroke();
-   ctx.fillStyle='#5a5a5a';ctx.fillRect(453,104,2,2);
+   ctx.fillStyle='#333333';ctx.beginPath();ctx.arc(375,116,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c9c9c9';ctx.beginPath();ctx.arc(375,116,10,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='#454545';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(375,116);ctx.lineTo(375,109);ctx.moveTo(375,116);ctx.lineTo(381,119);ctx.stroke();
+   ctx.fillStyle='#5a5a5a';ctx.fillRect(374,104,2,2);
   }
 
   // VISUAL PASS: office-specific dressing, layered lighting, wall fixtures and material detail.
