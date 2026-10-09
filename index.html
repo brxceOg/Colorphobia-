@@ -217,10 +217,10 @@ function collide(x,y){
   box(90,100,320,5);box(410,100,5,30);box(410,125,80,5);box(485,130,5,50);box(485,235,5,125);box(90,355,400,5);box(90,100,5,260);
   box(540,100,300,5);box(540,355,160,5);box(770,355,40,5);box(810,300,5,60);box(810,300,30,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,55);
   box(890,100,220,5);box(890,355,180,5);box(1070,330,5,30);box(1070,330,40,5);box(890,100,5,90);box(890,245,5,115);box(1105,100,5,230);box(1105,335,5,25);
-  box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,545,5,110);
+  box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
   box(490,430,160,5);box(790,430,320,5);box(490,655,570,5);box(1060,600,5,55);box(1060,600,50,5);box(490,430,5,225);box(1105,430,5,170);box(1105,600,5,55);
   // furniture
-  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,499,150,45],[690,499,150,45],[870,499,150,45],[510,580,150,45],[690,580,150,45],[870,580,150,45],[1040,465,48,56]].forEach(o=>box(...o));
+  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,499,150,45],[690,499,150,45],[870,499,150,45],[510,574,150,45],[690,574,150,45],[870,574,150,45],[1040,465,48,56]].forEach(o=>box(...o));
  } else {
   box(90,100,1020,5);box(90,655,1020,5);box(90,100,5,560);box(1105,100,5,560);
  }
@@ -316,7 +316,7 @@ function render(){
   wallSeg(90,100,410,100);wallSeg(410,100,410,130);wallSeg(410,130,490,130);wallSeg(490,130,490,180);wallSeg(490,235,490,360);wallSeg(90,360,490,360);wallSeg(90,100,90,360);
   wallSeg(540,100,840,100);wallSeg(840,100,840,190);wallSeg(840,245,840,300);wallSeg(840,300,810,300);wallSeg(810,300,810,360);wallSeg(540,360,700,360);wallSeg(770,360,810,360);wallSeg(540,100,540,180);wallSeg(540,235,540,360);
   wallSeg(890,100,1110,100);wallSeg(1110,100,1110,330);wallSeg(1110,330,1070,330);wallSeg(1070,330,1070,360);wallSeg(1070,360,890,360);wallSeg(890,100,890,190);wallSeg(890,245,890,360);
-  wallSeg(90,430,365,430);wallSeg(365,430,365,465);wallSeg(365,465,440,465);wallSeg(440,465,440,500);wallSeg(440,545,440,655);wallSeg(90,655,440,655);wallSeg(90,430,90,655);
+  wallSeg(90,430,365,430);wallSeg(365,430,365,465);wallSeg(365,465,440,465);wallSeg(440,465,440,500);wallSeg(440,563,440,655);wallSeg(90,655,440,655);wallSeg(90,430,90,655);
   wallSeg(490,430,650,430);wallSeg(790,430,1110,430);wallSeg(1110,430,1110,600);wallSeg(1110,600,1060,600);wallSeg(1060,600,1060,655);wallSeg(1060,655,490,655);wallSeg(490,655,490,430);
   function verticalDoor(x,y){ctx.fillStyle='#d2cbbd';ctx.fillRect(x-4,y-4,10,63);ctx.fillStyle='#292622';ctx.fillRect(x-4,y-4,10,4);ctx.fillRect(x-4,y+55,10,4);ctx.fillStyle='#b8b0a2';ctx.fillRect(x-2,y-2,6,59);ctx.strokeStyle='#777066';ctx.lineWidth=1;ctx.strokeRect(x-2,y-2,6,59);ctx.fillStyle='#5d4031';ctx.fillRect(x+2,y+1,38,5);ctx.fillStyle='#896348';ctx.fillRect(x+5,y+2,30,3);ctx.fillStyle='#c0a36c';ctx.fillRect(x+31,y+3,3,2);ctx.strokeStyle='rgba(70,58,46,.55)';ctx.beginPath();ctx.arc(x+2,y+2,38,0,Math.PI/2);ctx.stroke();}
   function horizontalDoor(x,y){ctx.fillStyle='#d2cbbd';ctx.fillRect(x-4,y-4,78,10);ctx.fillStyle='#292622';ctx.fillRect(x-4,y-4,4,10);ctx.fillRect(x+70,y-4,4,10);ctx.fillStyle='#b8b0a2';ctx.fillRect(x-2,y-2,74,6);ctx.strokeStyle='#777066';ctx.lineWidth=1;ctx.strokeRect(x-2,y-2,74,6);ctx.fillStyle='#5d4031';ctx.fillRect(x+1,y+2,5,36);ctx.fillStyle='#896348';ctx.fillRect(x+2,y+5,3,28);ctx.fillStyle='#c0a36c';ctx.fillRect(x+3,y+26,2,3);ctx.strokeStyle='rgba(70,58,46,.55)';ctx.beginPath();ctx.arc(x+2,y+2,36,0,Math.PI/2);ctx.stroke();}
@@ -413,19 +413,19 @@ function render(){
 
   // BREAK ROOM: kitchenette on the left, communal table centered, and clear circulation.
   fridge(108,465);
-  cabinet(158,465,135,38);
+  cabinet(158,465,145,38);
   sink(178,470,82);
   // Microwave on the counter, with a readable front panel.
-  ctx.fillStyle='#3b3935';ctx.fillRect(250,470,34,23);
-  ctx.fillStyle='#aaa69b';ctx.fillRect(254,474,26,15);
-  ctx.fillStyle='#33312d';ctx.fillRect(257,477,20,9);
-  ctx.fillStyle='#c2b9a8';ctx.fillRect(266,480,3,3);
+  ctx.fillStyle='#3b3935';ctx.fillRect(264,470,34,23);
+  ctx.fillStyle='#aaa69b';ctx.fillRect(268,474,26,15);
+  ctx.fillStyle='#33312d';ctx.fillRect(271,477,20,9);
+  ctx.fillStyle='#c2b9a8';ctx.fillRect(280,480,3,3);
   // Removed overlapping duplicate upper cabinet; the counter is the kitchenette surface.
   // Noticeboard and a couple of pinned notes.
-  ctx.fillStyle='#786b5b';ctx.fillRect(302,442,50,26);
-  ctx.fillStyle='#c6bda9';ctx.fillRect(306,446,42,18);
-  ctx.fillStyle='#8e6255';ctx.fillRect(310,450,12,3);
-  ctx.fillStyle='#6c7a70';ctx.fillRect(310,457,27,3);
+  ctx.fillStyle='#786b5b';ctx.fillRect(302,435,50,26);
+  ctx.fillStyle='#c6bda9';ctx.fillRect(306,439,42,18);
+  ctx.fillStyle='#8e6255';ctx.fillRect(310,443,12,3);
+  ctx.fillStyle='#6c7a70';ctx.fillRect(310,450,27,3);
   // Lunch table with evenly spaced chairs on both long sides.
   table(185,535,180,58);
   chair(205,505,34,25);chair(260,505,34,25);chair(315,505,34,25);
@@ -447,7 +447,7 @@ function render(){
    chair(x+55,y+44,38,23);
   }
   cubicle(510,490);cubicle(690,490);cubicle(870,490);
-  cubicle(510,580);cubicle(690,580);cubicle(870,580);
+  cubicle(510,565);cubicle(690,565);cubicle(870,565);
   // Shared printer station against the right wall.
   cabinet(1040,465,48,56);
   ctx.fillStyle='#393936';ctx.fillRect(1045,471,38,18);
