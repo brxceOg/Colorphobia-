@@ -134,7 +134,7 @@ function resize(){
 }
 addEventListener('resize',resize);resize();
 
-const player={x:300,y:245,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:300,y:245,r:13,spd:3.1,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0, running=false, encounterStarted=false;
 let lastRoomName='';
 function roomName(){
@@ -607,7 +607,7 @@ function render(){
    ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
   } else if(state==='hospital'){
    // The hospital/industrial passage uses concrete seams and repeated ceiling lights.
-   for(let yy=130;yy<630;yy+=96){ctx.fillStyle='#b8b8b8';ctx.fillRect(100,yy,1000,3);ctx.fillStyle='#858585';ctx.fillRect(100,yy+4,1000,1);}
+   // Removed repeating floating horizontal marks that were reading as stray lines.
    [[180,112,110],[430,112,110],[680,112,110],[930,112,110]].forEach(a=>lamp(...a));
    for(let xx=150;xx<1080;xx+=185){ctx.fillStyle='#777777';ctx.fillRect(xx,605,82,28);ctx.strokeStyle='#333333';ctx.lineWidth=2;ctx.strokeRect(xx,605,82,28);ctx.fillStyle='#bcbcbc';ctx.fillRect(xx+6,610,70,3);ctx.fillStyle='#555555';ctx.fillRect(xx+8,618,66,2);}
    const vg=ctx.createRadialGradient(600,380,160,600,380,700);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.35)');ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
