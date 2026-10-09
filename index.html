@@ -13,6 +13,14 @@ html,body{margin:0;background:#d2d2d2;color:#171717;font-family:ui-monospace,SFM
 #hud span{background:#e9e9e9;border:2px solid #171717;padding:7px 9px;box-shadow:3px 3px 0 #171717}
 #msg{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);width:min(90vw,560px);padding:13px 15px;background:#e9e9e9;border:2px solid #171717;box-shadow:4px 4px 0 #171717;display:none;font-size:12px;line-height:1.5}
 #touch{position:fixed;bottom:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:end;touch-action:none}
+/* Battle mode gets its own uncluttered control layout. */
+#touch.battle-mode{position:fixed;inset:auto 20px 18px auto;left:auto;right:20px;bottom:18px;display:block;z-index:8;pointer-events:none}
+#touch.battle-mode .pad{display:none}
+#touch.battle-mode .actions{pointer-events:auto;display:grid;grid-template-columns:repeat(2,minmax(76px,100px));gap:9px;max-width:none}
+#touch.battle-mode .actions button{min-width:76px;min-height:48px;font-size:11px;letter-spacing:.5px}
+body.battle-mode #charBtn{display:none!important}
+body.battle-mode #charMenu{display:none!important}
+
 .pad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px 52px;gap:5px}
 button{font:inherit;color:#171717;background:#e9e9e9;border:2px solid #171717;border-radius:0;min-width:52px;min-height:52px;box-shadow:3px 3px 0 #171717;touch-action:none;user-select:none}
 button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #171717}
@@ -267,7 +275,7 @@ function update(){
  }
 }
 function startBattle(){
- state='battle';area.textContent='ENCOUNTER';touch.classList.remove('hidden');
+ state='battle';area.textContent='ENCOUNTER';touch.classList.remove('hidden');touch.classList.add('battle-mode');document.body.classList.add('battle-mode');charMenu.classList.remove('open');charBtn.style.display='none';
  battle={enemy:'RED EYEMITE',hp:150,max:150,str:25,pow:15,turn:true};
  player.x=W/2;player.y=H/2;
  renderActions();
@@ -286,9 +294,9 @@ function enemyTurn(){
 function attack(){if(!battle)return;let dmg=Math.max(1,player.str+Math.floor(Math.random()*8)-4);battle.hp=Math.max(0,battle.hp-dmg);say('ATTACK deals '+dmg+' damage.');afterPlayer()}
 function spell(){if(!battle)return;let dmg=Math.max(1,player.pow+Math.floor(player.thought/5)+Math.floor(Math.random()*6));battle.hp=Math.max(0,battle.hp-dmg);say('THOUGHT distorts the attack. '+dmg+' damage.');afterPlayer()}
 function item(){if(!battle)return;if(player.items<=0){say('You have no pills.');return}player.items--;player.hp=Math.min(player.maxhp,player.hp+24);say('You take a pill. +24 HP. Something about this feels familiar.');afterPlayer()}
-function run(){if(!battle)return;if(Math.random()<.55){battle=null;state='office';touch.classList.add('hidden');area.textContent='OFFICE';say('You escaped.');}else{say('You cannot get away.');enemyTurn()}}
+function run(){if(!battle)return;if(Math.random()<.55){battle=null;state='office';touch.classList.add('hidden');touch.classList.remove('battle-mode');document.body.classList.remove('battle-mode');area.textContent='OFFICE';say('You escaped.');}else{say('You cannot get away.');enemyTurn()}}
 function afterPlayer(){
- if(battle.hp<=0){battle=null;state='hospital';touch.classList.add('hidden');area.textContent='HOSPITAL';player.x=90;player.y=250;player.items=0;flash=15;say('The Red Eyemite is gone. The pills are still in your possession. The world cuts somewhere else.');return}
+ if(battle.hp<=0){battle=null;state='hospital';touch.classList.add('hidden');touch.classList.remove('battle-mode');document.body.classList.remove('battle-mode');area.textContent='HOSPITAL';player.x=90;player.y=250;player.items=0;flash=15;say('The Red Eyemite is gone. The pills are still in your possession. The world cuts somewhere else.');return}
  enemyTurn();
 }
 function drawBattle(){
@@ -308,9 +316,16 @@ function drawBattle(){
  ctx.fillStyle='#4a4a4a';ctx.strokeStyle='#171717';ctx.lineWidth=2;
  [[ex-56,ey-39,ex-77,ey-52,ex-65,ey-22],[ex+39,ey-51,ex+61,ey-67,ex+54,ey-35],[ex-23,ey+27,ex-38,ey+48,ex-5,ey+34]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(p[2],p[3]);ctx.lineTo(p[4],p[5]);ctx.closePath();ctx.fill();ctx.stroke();});
  const vg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,Math.max(W,H)*.72);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
- drawText(20,105,'RED EYEMITE',16);drawText(20,128,`HP ${battle.hp} / ${battle.max}`,12);
- drawText(20,H-180,`YOU  HP ${player.hp}/${player.maxhp}`,13);
- drawText(20,H-158,`STR ${player.str}  POW ${player.pow}  F ${player.fear}  T ${player.thought}  D ${player.disgust}`,11);
+ // Dedicated status panels keep every line separated at both desktop and phone sizes.
+ ctx.fillStyle='rgba(18,18,18,.88)';ctx.fillRect(18,18,250,72);
+ ctx.strokeStyle='#a5a5a5';ctx.lineWidth=1;ctx.strokeRect(18.5,18.5,249,71);
+ drawText(30,43,'RED EYEMITE',16);
+ drawText(30,65,`HP  ${battle.hp} / ${battle.max}`,12);
+ ctx.fillStyle='rgba(18,18,18,.88)';ctx.fillRect(18,H-100,Math.min(430,W-250),78);
+ ctx.strokeStyle='#a5a5a5';ctx.strokeRect(18.5,H-99.5,Math.min(430,W-250)-1,77);
+ drawText(30,H-75,`PLAYER  HP ${player.hp} / ${player.maxhp}`,12);
+ drawText(30,H-52,`STR ${player.str}  POW ${player.pow}  F ${player.fear}`,11);
+ drawText(30,H-34,`THOUGHT ${player.thought}  DISGUST ${player.disgust}`,11);
 }
 function render(){
  ctx.clearRect(0,0,W,H);
