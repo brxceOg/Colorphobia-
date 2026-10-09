@@ -181,6 +181,16 @@ document.querySelectorAll('[data-k]').forEach(b=>{
 function say(t){msg.textContent=t;msg.style.display='block';clearTimeout(say.t);say.t=setTimeout(()=>msg.style.display='none',4500)}
 function drawText(x,y,t,size=13){ctx.font=size+'px monospace';ctx.fillStyle='#ddd';ctx.fillText(t,x,y)}
 function wall(x,y,w,h){ctx.fillStyle='#eee9dc';ctx.fillRect(x,y,w,h);ctx.strokeStyle='#181716';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h)}
+function drawPlayer(){
+ ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(player.x-10,player.y+12,20,3);
+ ctx.fillStyle='#f4f4f4';ctx.fillRect(player.x-6,player.y-13,12,12);ctx.fillRect(player.x-5,player.y-1,10,9);
+ ctx.fillRect(player.x-7,player.y+1,3,7);ctx.fillRect(player.x+4,player.y+1,3,7);ctx.fillRect(player.x-5,player.y+8,4,7);ctx.fillRect(player.x+1,player.y+8,4,7);
+ ctx.strokeStyle='#171717';ctx.lineWidth=1.5;ctx.strokeRect(player.x-6,player.y-13,12,12);ctx.strokeRect(player.x-5,player.y-1,10,9);
+ ctx.beginPath();ctx.moveTo(player.x-3,player.y-3);ctx.lineTo(player.x-1,player.y-2);ctx.moveTo(player.x+1,player.y-2);ctx.lineTo(player.x+3,player.y-3);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(player.x-2,player.y);ctx.lineTo(player.x,player.y+1);ctx.lineTo(player.x+2,player.y);ctx.stroke();
+ ctx.strokeRect(player.x-5,player.y+8,4,7);ctx.strokeRect(player.x+1,player.y+8,4,7);
+}
+
 function world(){
  ctx.fillStyle=state==='office'?'#d8d2c4':'#c9c3b7';ctx.fillRect(0,0,W,H);
  // floor grid
@@ -205,7 +215,7 @@ function world(){
   
  }
  // player
- ctx.fillStyle='#181716';ctx.fillRect(player.x-9,player.y-13,18,26);ctx.fillStyle='#eee9dc';ctx.fillRect(player.x-6,player.y-9,12,9);ctx.fillStyle='#b22';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
+ drawPlayer();
  if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
 }
 
@@ -510,9 +520,7 @@ function render(){
    const current=rooms.find(p=>inside(p));ctx.fillStyle='#050505';rooms.forEach(p=>{if(p!==current){ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fill();}});
   }
   // Player
- ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
- ctx.fillStyle='#e8e2d5';ctx.fillRect(player.x-6,player.y-9,12,9);
- ctx.fillStyle='#a33';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
+ drawPlayer();
  ctx.restore();
 }
 function loop(){update();updateRoomLabel();render();requestAnimationFrame(loop)}
