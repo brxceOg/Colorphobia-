@@ -220,7 +220,7 @@ function collide(x,y){
   box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,545,5,110);
   box(490,430,160,5);box(790,430,320,5);box(490,655,570,5);box(1060,600,5,55);box(1060,600,50,5);box(490,430,5,225);box(1105,430,5,170);box(1105,600,5,55);
   // furniture
-  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,463,150,45],[690,463,150,45],[870,463,150,45],[510,572,150,45],[690,572,150,45],[870,572,150,45],[1040,465,48,56]].forEach(o=>box(...o));
+  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,499,150,45],[690,499,150,45],[870,499,150,45],[510,580,150,45],[690,580,150,45],[870,580,150,45],[1040,465,48,56]].forEach(o=>box(...o));
  } else {
   box(90,100,1020,5);box(90,655,1020,5);box(90,100,5,560);box(1105,100,5,560);
  }
@@ -416,16 +416,16 @@ function render(){
   cabinet(158,465,135,38);
   sink(178,470,82);
   // Microwave on the counter, with a readable front panel.
-  ctx.fillStyle='#3b3935';ctx.fillRect(268,449,34,23);
-  ctx.fillStyle='#aaa69b';ctx.fillRect(272,453,26,15);
-  ctx.fillStyle='#33312d';ctx.fillRect(275,456,20,9);
-  ctx.fillStyle='#c2b9a8';ctx.fillRect(284,459,3,3);
-  cabinet(165,435,112,24);
+  ctx.fillStyle='#3b3935';ctx.fillRect(250,470,34,23);
+  ctx.fillStyle='#aaa69b';ctx.fillRect(254,474,26,15);
+  ctx.fillStyle='#33312d';ctx.fillRect(257,477,20,9);
+  ctx.fillStyle='#c2b9a8';ctx.fillRect(266,480,3,3);
+  // Removed overlapping duplicate upper cabinet; the counter is the kitchenette surface.
   // Noticeboard and a couple of pinned notes.
-  ctx.fillStyle='#786b5b';ctx.fillRect(280,442,72,35);
-  ctx.fillStyle='#c6bda9';ctx.fillRect(285,447,62,25);
-  ctx.fillStyle='#8e6255';ctx.fillRect(290,452,17,3);
-  ctx.fillStyle='#6c7a70';ctx.fillRect(290,460,38,3);
+  ctx.fillStyle='#786b5b';ctx.fillRect(302,442,50,26);
+  ctx.fillStyle='#c6bda9';ctx.fillRect(306,446,42,18);
+  ctx.fillStyle='#8e6255';ctx.fillRect(310,450,12,3);
+  ctx.fillStyle='#6c7a70';ctx.fillRect(310,457,27,3);
   // Lunch table with evenly spaced chairs on both long sides.
   table(185,535,180,58);
   chair(205,505,34,25);chair(260,505,34,25);chair(315,505,34,25);
@@ -446,8 +446,8 @@ function render(){
    ctx.fillStyle='#8b887e';ctx.fillRect(x+55,y+30,26,2);
    chair(x+55,y+44,38,23);
   }
-  cubicle(510,454);cubicle(690,454);cubicle(870,454);
-  cubicle(510,563);cubicle(690,563);cubicle(870,563);
+  cubicle(510,490);cubicle(690,490);cubicle(870,490);
+  cubicle(510,580);cubicle(690,580);cubicle(870,580);
   // Shared printer station against the right wall.
   cabinet(1040,465,48,56);
   ctx.fillStyle='#393936';ctx.fillRect(1045,471,38,18);
@@ -469,7 +469,7 @@ function render(){
    [[540,100],[840,100],[840,300],[810,300],[810,360],[540,360]],
    [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
    [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
-   [[490,430],[700,430],[700,390],[770,390],[770,430],[1110,430],[1110,600],[1060,600],[1060,655],[490,655]]
+   [[490,430],[1110,430],[1110,600],[1060,600],[1060,655],[490,655]]
   ];
   const inside=p=>{let hit=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>player.y)!==(b[1]>player.y))&&(player.x<(b[0]-a[0])*(player.y-a[1])/(b[1]-a[1])+a[0]))hit=!hit;}return hit;};
   const current=rooms.find(inside);ctx.fillStyle='#050505';rooms.forEach(p=>{if(p!==current){ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fill();}});
