@@ -134,7 +134,7 @@ function resize(){
 }
 addEventListener('resize',resize);resize();
 
-const player={x:220,y:220,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:300,y:245,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0, running=false, encounterStarted=false;
 let lastRoomName='';
 function roomName(){
@@ -228,23 +228,6 @@ function world(){
   ctx.fillStyle='#e9e9e9';ctx.fillRect(310,105,100,65);ctx.strokeStyle='#171717';ctx.strokeRect(310,105,100,65);
   ctx.fillStyle='#505050';ctx.fillRect(W-115,H-215,55,55);
   ctx.fillStyle='#e9e9e9';ctx.fillRect(260,250,70,45);ctx.strokeStyle='#171717';ctx.strokeRect(260,250,70,45);
-  if(!pillsFound){
-    // Textured monochrome capsule sprites with a subtle pickup glint.
-    const pulse=.5+.5*Math.sin(Date.now()/190),px=465,py=221;
-    ctx.fillStyle='rgba(0,0,0,.24)';ctx.beginPath();ctx.ellipse(px+7,py+13,22,5,0,0,Math.PI*2);ctx.fill();
-    [[px-9,py-3],[px+8,py-1]].forEach((p,i)=>{
-     ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(i===0?-.24:.18);
-     ctx.fillStyle='#171717';ctx.strokeStyle='#171717';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-5,-10,10,20,5);ctx.fill();
-     ctx.fillStyle='#ededed';ctx.beginPath();ctx.roundRect(-4,-9,8,18,4);ctx.fill();
-     ctx.fillStyle='#777777';ctx.fillRect(-3,-1,6,2);ctx.fillStyle='#ffffff';ctx.fillRect(-2,-7,3,4);
-     ctx.restore();
-    });
-    const gx=px+23,gy=py-12-pulse*2;
-    ctx.strokeStyle='#f7f7f7';ctx.lineWidth=1.5;ctx.beginPath();
-    ctx.moveTo(gx,gy-5);ctx.lineTo(gx,gy+5);ctx.moveTo(gx-5,gy);ctx.lineTo(gx+5,gy);
-    ctx.moveTo(gx-3,gy-3);ctx.lineTo(gx+3,gy+3);ctx.moveTo(gx+3,gy-3);ctx.lineTo(gx-3,gy+3);ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,'+(.12+.18*pulse)+')';ctx.beginPath();ctx.arc(px+5,py,25,0,Math.PI*2);ctx.fill();
-   }
   
  }else{
   wall(0,65,W,10); wall(0,H-145,W,12);
@@ -255,6 +238,24 @@ function world(){
   
  }
  // player
+ // Draw collectible after all room fills, furniture, and hidden-room masks.
+ if(state==='office'&&!pillsFound){
+  const pulse=.5+.5*Math.sin(Date.now()/190),px=465,py=220;
+  ctx.fillStyle='rgba(0,0,0,.34)';ctx.beginPath();ctx.ellipse(px+2,py+13,18,5,0,0,Math.PI*2);ctx.fill();
+  [[px-7,py-1,-.25],[px+8,py+1,.2]].forEach(p=>{
+   ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(p[2]);
+   ctx.fillStyle='#202020';ctx.beginPath();ctx.roundRect(-6,-11,12,22,6);ctx.fill();
+   ctx.fillStyle='#f1f1f1';ctx.beginPath();ctx.roundRect(-4.5,-9.5,9,19,4.5);ctx.fill();
+   ctx.fillStyle='#888888';ctx.fillRect(-4,-1,8,2);ctx.fillStyle='#ffffff';ctx.fillRect(-2.5,-7,3,4);
+   ctx.strokeStyle='#363636';ctx.lineWidth=1;ctx.stroke();
+   ctx.restore();
+  });
+  const gx=px+22,gy=py-13-pulse*2;
+  ctx.strokeStyle='#ffffff';ctx.lineWidth=1.5;ctx.beginPath();
+  ctx.moveTo(gx,gy-6);ctx.lineTo(gx,gy+6);ctx.moveTo(gx-6,gy);ctx.lineTo(gx+6,gy);
+  ctx.moveTo(gx-3,gy-3);ctx.lineTo(gx+3,gy+3);ctx.moveTo(gx+3,gy-3);ctx.lineTo(gx-3,gy+3);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,'+(.10+.12*pulse)+')';ctx.beginPath();ctx.arc(px+1,py,24,0,Math.PI*2);ctx.fill();
+ }
  drawPlayer();
  if(flash>0){ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(0,0,W,H);flash--}
 }
