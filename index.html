@@ -221,7 +221,7 @@ function collide(x,y){
   box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
   box(490,430,130,5);box(690,430,120,5);box(490,655,130,5);box(690,655,120,5);box(490,430,5,70);box(490,560,5,95);box(805,430,5,70);box(805,560,5,95);
   box(810,430,300,5);box(810,655,300,5);box(1105,430,5,225);
-  [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[900,125,65,100],[1035,125,65,100],[900,275,60,50],[1035,275,60,45],[642,170,46,4],[642,170,4,76],[684,170,4,76],[650,184,30,28],[535,192,23,31],[535,237,23,31],[530,286,32,56],[570,270,24,28],[722,168,43,4],[722,168,4,78],[761,168,4,78],[770,168,43,4],[770,168,4,78],[809,168,4,78],[818,168,43,4],[818,168,4,78],[857,168,4,78],[728,183,30,28],[776,183,30,28],[824,183,30,28],[844,263,31,78],[846,180,26,45],[818,286,17,25],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[700,450,90,42],[715,500,45,30],[850,455,55,58],[940,455,55,58],[1030,455,55,58],[850,565,55,58],[940,565,55,58],[1030,565,55,58]].forEach(o=>box(...o));
+  [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[900,125,65,100],[1035,125,65,100],[900,275,60,50],[1035,275,60,45],[642,170,46,4],[642,170,4,76],[684,170,4,76],[650,190,30,28],[535,192,23,31],[535,237,23,31],[530,286,32,56],[570,278,22,20],[570,305,20,28],[722,168,43,4],[722,168,4,78],[761,168,4,78],[770,168,43,4],[770,168,4,78],[809,168,4,78],[818,168,43,4],[818,168,4,78],[857,168,4,78],[728,190,30,28],[776,190,30,28],[824,190,30,28],[727,222,33,4],[775,222,33,4],[823,222,33,4],[844,270,31,71],[846,248,26,16],[818,286,17,25],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[700,450,90,42],[715,500,45,30],[850,455,55,58],[940,455,55,58],[1030,455,55,58],[850,565,55,58],[940,565,55,58],[1030,565,55,58]].forEach(o=>box(...o));
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
@@ -409,34 +409,43 @@ function render(){
   cabinet(125,275,55,65);cabinet(410,275,55,65);
   ctx.fillStyle='#6d6255';ctx.fillRect(205,250,45,4);ctx.fillRect(215,257,25,3);
 
-  // MEN’S RESTROOM: two wall-mounted urinals, one enclosed stall, and a compact side-wall sink.
+  // MEN’S RESTROOM: fixtures arranged in clear zones with a wide entrance aisle.
+  // Floor tile and a darker border make the room read as a finished washroom.
   ctx.fillStyle='#c5c5bb';ctx.fillRect(525,150,175,205);
-  for(let yy=154;yy<355;yy+=20){ctx.strokeStyle='#a6a69c';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(525,yy);ctx.lineTo(700,yy);ctx.stroke();}
-  for(let xx=530;xx<705;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
-  // One private stall in the rear-right corner.
+  ctx.fillStyle='#b6b6ac';ctx.fillRect(525,150,175,5);ctx.fillRect(525,350,175,5);
+  for(let yy=170;yy<350;yy+=20){ctx.strokeStyle='#a6a69c';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(525,yy);ctx.lineTo(700,yy);ctx.stroke();}
+  for(let xx=550;xx<700;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
+  // Single enclosed toilet stall in the back-right corner; open front faces the aisle.
   ctx.fillStyle='#626760';ctx.fillRect(642,170,4,76);ctx.fillRect(642,170,46,4);ctx.fillRect(684,170,4,76);
+  ctx.fillStyle='#8c9087';ctx.fillRect(647,174,35,2);
   function toilet(x,y){ctx.fillStyle='#555751';ctx.fillRect(x,y,30,9);ctx.fillStyle='#deddd4';ctx.fillRect(x+3,y+8,24,20);ctx.fillStyle='#aaa99f';ctx.fillRect(x+7,y+12,16,11);ctx.fillStyle='#f0efe8';ctx.fillRect(x+10,y+14,10,7);}
-  toilet(650,184);
+  toilet(650,190);
   function urinal(x,y){ctx.fillStyle='#777b75';ctx.fillRect(x,y,23,5);ctx.fillStyle='#e3e1d8';ctx.fillRect(x+3,y+5,17,18);ctx.fillStyle='#aaa99f';ctx.fillRect(x+7,y+9,9,10);ctx.fillStyle='#555751';ctx.fillRect(x+9,y-3,5,4);}
   urinal(535,195);urinal(535,240);
-  // Narrow sink counter runs against the left wall, leaving the middle aisle open.
-  ctx.fillStyle='#777873';ctx.fillRect(530,286,32,56);ctx.fillStyle='#bbb9af';ctx.fillRect(535,291,22,46);
-  ctx.fillStyle='#44433f';ctx.fillRect(543,298,5,5);ctx.fillRect(543,318,5,5);
-  ctx.fillStyle='#6c706a';ctx.fillRect(570,270,24,28);ctx.fillStyle='#d7d5cc';ctx.fillRect(574,274,16,20);ctx.fillStyle='#343531';ctx.fillRect(580,276,4,4);
-  // WOMEN’S RESTROOM: three full-height private stalls, a longer double vanity, mirror and sanitary bin.
+  // One compact sink and mirror beside the entrance, not across the walking lane.
+  ctx.fillStyle='#777873';ctx.fillRect(530,286,32,56);ctx.fillStyle='#bbb9af';ctx.fillRect(534,291,24,46);
+  ctx.fillStyle='#44433f';ctx.fillRect(543,300,6,6);
+  ctx.fillStyle='#3f4948';ctx.fillRect(570,278,22,3);ctx.fillStyle='#879795';ctx.fillRect(572,281,18,16);
+  ctx.fillStyle='#6c706a';ctx.fillRect(570,305,20,28);ctx.fillStyle='#d7d5cc';ctx.fillRect(574,309,12,20);
+  // WOMEN’S RESTROOM: three evenly spaced stalls across the rear, vanity along the right wall.
   ctx.fillStyle='#c8c7bd';ctx.fillRect(715,150,170,205);
-  for(let yy=154;yy<355;yy+=20){ctx.strokeStyle='#aaa99f';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(715,yy);ctx.lineTo(885,yy);ctx.stroke();}
-  for(let xx=720;xx<890;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
+  ctx.fillStyle='#b7b6ac';ctx.fillRect(715,150,170,5);ctx.fillRect(715,350,170,5);
+  for(let yy=170;yy<350;yy+=20){ctx.strokeStyle='#aaa99f';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(715,yy);ctx.lineTo(885,yy);ctx.stroke();}
+  for(let xx=740;xx<885;xx+=25){ctx.beginPath();ctx.moveTo(xx,150);ctx.lineTo(xx,355);ctx.stroke();}
   ctx.fillStyle='#6f746d';
+  // Each stall has two side partitions and a rear divider; all share one straight line.
   ctx.fillRect(722,168,4,78);ctx.fillRect(722,168,43,4);ctx.fillRect(761,168,4,78);
   ctx.fillRect(770,168,4,78);ctx.fillRect(770,168,43,4);ctx.fillRect(809,168,4,78);
   ctx.fillRect(818,168,4,78);ctx.fillRect(818,168,43,4);ctx.fillRect(857,168,4,78);
-  toilet(728,183);toilet(776,183);toilet(824,183);
-  // Double vanity is fitted to the right wall, not across the entry path.
-  ctx.fillStyle='#777873';ctx.fillRect(844,263,31,78);ctx.fillStyle='#bbb9af';ctx.fillRect(849,268,21,68);
-  ctx.fillStyle='#44433f';ctx.fillRect(856,277,5,5);ctx.fillRect(856,305,5,5);
-  // Wall mirror and sanitary disposal unit make this room visually distinct.
-  ctx.fillStyle='#3f4948';ctx.fillRect(846,180,26,45);ctx.fillStyle='#879795';ctx.fillRect(849,183,20,39);
+  toilet(728,190);toilet(776,190);toilet(824,190);
+  // Three matching stall doors, shown closed with small handles.
+  ctx.fillStyle='#888c83';ctx.fillRect(727,222,33,4);ctx.fillRect(775,222,33,4);ctx.fillRect(823,222,33,4);
+  ctx.fillStyle='#454640';ctx.fillRect(753,226,3,5);ctx.fillRect(801,226,3,5);ctx.fillRect(849,226,3,5);
+  // Double vanity sits below the stall row, flush against the east wall.
+  ctx.fillStyle='#777873';ctx.fillRect(844,270,31,71);ctx.fillStyle='#bbb9af';ctx.fillRect(849,275,21,61);
+  ctx.fillStyle='#44433f';ctx.fillRect(856,282,5,5);ctx.fillRect(856,307,5,5);
+  ctx.fillStyle='#3f4948';ctx.fillRect(846,248,26,16);ctx.fillStyle='#879795';ctx.fillRect(849,251,20,10);
+  // Sanitary disposal unit is tucked below the mirror and away from the doorway.
   ctx.fillStyle='#676a64';ctx.fillRect(818,286,17,25);ctx.fillStyle='#a7a69d';ctx.fillRect(821,289,11,17);
   // STORAGE: shelving and cabinets hug the walls, boxes sit in front of storage.
   shelf(900,125,65,100);shelf(1035,125,65,100);
