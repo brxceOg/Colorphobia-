@@ -118,7 +118,7 @@ function resize(){
 }
 addEventListener('resize',resize);resize();
 
-const player={x:280,y:285,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:650,y:585,r:13,spd:1.7,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0, running=false, encounterStarted=false;
 let lastRoomName='';
 function roomName(){
@@ -126,10 +126,10 @@ function roomName(){
  if(state==='hospital') return 'HOSPITAL / INDUSTRIAL ACCESS';
  const rooms=[
   {name:'OFFICE',poly:[[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]]},
-  {name:'RECEPTION',poly:[[540,100],[840,100],[840,300],[810,300],[810,360],[540,360]]},
   {name:'STORAGE',poly:[[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]]},
   {name:'BREAK ROOM',poly:[[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]]},
-  {name:'WORK FLOOR',poly:[[490,430],[1110,430],[1110,600],[1060,600],[1060,655],[490,655]]}
+  {name:'RECEPTION',poly:[[490,430],[810,430],[810,655],[490,655]]},
+  {name:'WORK FLOOR',poly:[[810,430],[1110,430],[1110,600],[1060,600],[1060,655],[810,655]]}
  ];
  const inside=poly=>{let hit=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if(((a[1]>player.y)!==(b[1]>player.y))&&(player.x<(b[0]-a[0])*(player.y-a[1])/(b[1]-a[1])+a[0]))hit=!hit;}return hit;};
  const found=rooms.find(r=>inside(r.poly));
@@ -213,15 +213,13 @@ function collide(x,y){
  const obstacles=[];
  const box=(x,y,w,h)=>obstacles.push({x,y,w,h});
  if(state==='office'){
-  // Room walls, leaving intentional doorway gaps.
-  box(90,100,320,5);box(410,100,5,30);box(410,125,80,5);box(485,130,5,50);box(485,235,5,125);box(90,355,400,5);box(90,100,5,260);
-  box(540,100,300,5);box(540,355,160,5);box(770,355,40,5);box(810,300,5,60);box(810,300,30,5);box(540,100,5,80);box(540,235,5,125);box(835,100,5,90);box(835,245,5,55);
-  box(890,100,220,5);box(890,355,180,5);box(1070,330,5,30);box(1070,330,40,5);box(890,100,5,90);box(890,245,5,115);box(1105,100,5,230);box(1105,335,5,25);
-  box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
-  box(490,430,190,5);box(760,430,350,5);box(490,655,570,5);box(1060,600,5,55);box(1060,600,50,5);box(490,430,5,225);box(1105,430,5,170);box(1105,600,5,55);
-  // furniture
-  [[135,160,145,60],[325,160,100,60],[590,160,150,48],[925,150,105,70],[1020,275,55,45],[108,465,42,65],[158,465,135,38],[185,535,180,58],[510,499,130,45],[680,499,130,45],[850,499,130,45],[510,594,130,45],[680,594,130,45],[850,594,130,45],[1040,465,48,56]].forEach(o=>box(...o));
- } else {
+   box(90,100,320,5);box(410,100,5,30);box(410,125,80,5);box(485,130,5,230);box(90,355,130,5);box(290,355,200,5);box(90,100,5,260);
+   box(890,100,220,5);box(890,355,60,5);box(1020,355,50,5);box(1070,330,5,30);box(1070,330,40,5);box(890,100,5,255);box(1105,100,5,230);
+   box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
+   box(490,430,130,5);box(690,430,120,5);box(490,655,130,5);box(690,655,120,5);box(490,430,5,225);box(805,430,5,70);box(805,560,5,95);
+   box(810,430,300,5);box(810,655,250,5);box(1060,600,5,55);box(1060,600,50,5);box(1105,430,5,170);
+   [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[915,125,80,100],[1015,125,75,100],[915,275,75,50],[1005,275,55,45],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[550,480,190,50],[620,540,58,38],[830,470,70,58],[920,470,70,58],[1010,470,70,58],[830,565,70,58],[920,565,70,58],[1010,565,70,58],[1070,445,25,38]].forEach(o=>box(...o));
+  } 
   box(90,100,1020,5);box(90,655,1020,5);box(90,100,5,560);box(1105,100,5,560);
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
@@ -301,27 +299,26 @@ function render(){
  ctx.fillRect(0,0,44,worldH);ctx.fillRect(worldW-44,0,44,worldH);
 
  if(state==='office'){
-  // Chapter 1: compact office suite with a short corridor.
-  // Asymmetric room footprints replace the old uniform rectangles.
-  const roomPolys=[
-   [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
-   [[540,100],[840,100],[840,300],[810,300],[810,360],[540,360]],
-   [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
-   [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
-   [[490,430],[1110,430],[1110,600],[1060,600],[1060,655],[490,655]]
-  ];
-  roomPolys.forEach(p=>{ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fillStyle='#e8e2d5';ctx.fill();});
-  // Draw separate wall segments so each door occupies a genuine opening.
-  function wallSeg(x1,y1,x2,y2){ctx.lineCap='square';ctx.strokeStyle='#191817';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.strokeStyle='#827b70';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1-1);ctx.lineTo(x2,y2-1);ctx.stroke();}
-  wallSeg(90,100,410,100);wallSeg(410,100,410,130);wallSeg(410,130,490,130);wallSeg(490,130,490,180);wallSeg(490,235,490,360);wallSeg(90,360,490,360);wallSeg(90,100,90,360);
-  wallSeg(540,100,840,100);wallSeg(840,100,840,190);wallSeg(840,245,840,300);wallSeg(840,300,810,300);wallSeg(810,300,810,360);wallSeg(540,360,700,360);wallSeg(770,360,810,360);wallSeg(540,100,540,180);wallSeg(540,235,540,360);
-  wallSeg(890,100,1110,100);wallSeg(1110,100,1110,330);wallSeg(1110,330,1070,330);wallSeg(1070,330,1070,360);wallSeg(1070,360,890,360);wallSeg(890,100,890,190);wallSeg(890,245,890,360);
-  wallSeg(90,430,365,430);wallSeg(365,430,365,465);wallSeg(365,465,440,465);wallSeg(440,465,440,500);wallSeg(440,563,440,655);wallSeg(90,655,440,655);wallSeg(90,430,90,655);
-  wallSeg(490,430,680,430);wallSeg(760,430,1110,430);wallSeg(1110,430,1110,600);wallSeg(1110,600,1060,600);wallSeg(1060,600,1060,655);wallSeg(1060,655,490,655);wallSeg(490,655,490,430);
-  function verticalDoor(x,y){ctx.fillStyle='#d2cbbd';ctx.fillRect(x-4,y-4,10,63);ctx.fillStyle='#292622';ctx.fillRect(x-4,y-4,10,4);ctx.fillRect(x-4,y+55,10,4);ctx.fillStyle='#b8b0a2';ctx.fillRect(x-2,y-2,6,59);ctx.strokeStyle='#777066';ctx.lineWidth=1;ctx.strokeRect(x-2,y-2,6,59);ctx.fillStyle='#5d4031';ctx.fillRect(x+2,y+1,38,5);ctx.fillStyle='#896348';ctx.fillRect(x+5,y+2,30,3);ctx.fillStyle='#c0a36c';ctx.fillRect(x+31,y+3,3,2);ctx.strokeStyle='rgba(70,58,46,.55)';ctx.beginPath();ctx.arc(x+2,y+2,38,0,Math.PI/2);ctx.stroke();}
-  function horizontalDoor(x,y){ctx.fillStyle='#d2cbbd';ctx.fillRect(x-4,y-4,78,10);ctx.fillStyle='#292622';ctx.fillRect(x-4,y-4,4,10);ctx.fillRect(x+70,y-4,4,10);ctx.fillStyle='#b8b0a2';ctx.fillRect(x-2,y-2,74,6);ctx.strokeStyle='#777066';ctx.lineWidth=1;ctx.strokeRect(x-2,y-2,74,6);ctx.fillStyle='#5d4031';ctx.fillRect(x+1,y+2,5,36);ctx.fillStyle='#896348';ctx.fillRect(x+2,y+5,3,28);ctx.fillStyle='#c0a36c';ctx.fillRect(x+3,y+26,2,3);ctx.strokeStyle='rgba(70,58,46,.55)';ctx.beginPath();ctx.arc(x+2,y+2,36,0,Math.PI/2);ctx.stroke();}
-  verticalDoor(490,180);verticalDoor(540,180);verticalDoor(840,190);verticalDoor(890,190);verticalDoor(440,500);horizontalDoor(680,428);
-    // Room-specific environmental props.
+  // Private office and storage above a broad corridor; reception is the main
+   // entry room below, with break room left and the call-centre to the right.
+   const roomPolys=[
+    [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
+    [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
+    [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
+    [[490,430],[810,430],[810,655],[490,655]],
+    [[810,430],[1110,430],[1110,600],[1060,600],[1060,655],[810,655]]
+   ];
+   roomPolys.forEach(p=>{ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fillStyle='#e8e2d5';ctx.fill();});
+   function wallSeg(x1,y1,x2,y2){ctx.lineCap='square';ctx.strokeStyle='#191817';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.strokeStyle='#827b70';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1-1);ctx.lineTo(x2,y2-1);ctx.stroke();}
+   wallSeg(90,100,410,100);wallSeg(410,100,410,130);wallSeg(410,130,490,130);wallSeg(490,130,490,360);wallSeg(90,360,220,360);wallSeg(290,360,490,360);wallSeg(90,100,90,360);
+   wallSeg(890,100,1110,100);wallSeg(1110,100,1110,330);wallSeg(1110,330,1070,330);wallSeg(1070,330,1070,360);wallSeg(1070,360,1020,360);wallSeg(950,360,890,360);wallSeg(890,100,890,360);
+   wallSeg(90,430,365,430);wallSeg(365,430,365,465);wallSeg(365,465,440,465);wallSeg(440,465,440,500);wallSeg(440,563,440,655);wallSeg(90,655,440,655);wallSeg(90,430,90,655);
+   wallSeg(490,430,620,430);wallSeg(690,430,810,430);wallSeg(490,655,620,655);wallSeg(690,655,810,655);wallSeg(490,430,490,655);wallSeg(810,430,810,500);wallSeg(810,560,810,655);
+   wallSeg(810,430,1110,430);wallSeg(1110,430,1110,600);wallSeg(1110,600,1060,600);wallSeg(1060,600,1060,655);wallSeg(1060,655,810,655);
+   function closedH(x,y,w=70){ctx.fillStyle='#b8b0a2';ctx.fillRect(x,y-3,w,6);ctx.strokeStyle='#5b554c';ctx.lineWidth=1;ctx.strokeRect(x,y-3,w,6);ctx.fillStyle='#76533e';ctx.fillRect(x+3,y-2,w-6,4);ctx.fillStyle='#c0a36c';ctx.fillRect(x+w-10,y-1,3,2);ctx.fillStyle='#292622';ctx.fillRect(x,y-4,3,8);ctx.fillRect(x+w-3,y-4,3,8);}
+   function closedV(x,y,h=60){ctx.fillStyle='#b8b0a2';ctx.fillRect(x-3,y,6,h);ctx.strokeStyle='#5b554c';ctx.lineWidth=1;ctx.strokeRect(x-3,y,6,h);ctx.fillStyle='#76533e';ctx.fillRect(x-2,y+3,4,h-6);ctx.fillStyle='#c0a36c';ctx.fillRect(x-1,y+h/2,2,4);ctx.fillStyle='#292622';ctx.fillRect(x-4,y,8,3);ctx.fillRect(x-4,y+h-3,8,3);}
+   closedH(220,357);closedH(950,357);closedV(437,500,63);closedH(620,427);closedH(620,652);closedV(807,500,60);
+   // Room-specific environmental props.
   function px(x,y,w,h,base,detail){
    ctx.fillStyle=base;ctx.fillRect(x,y,w,h);
    ctx.fillStyle='#777066';ctx.fillRect(x+3,y+3,w-6,3);
@@ -394,10 +391,10 @@ function render(){
 
   // Purposeful room layouts — props stay inside their room boundaries.
   // RECEPTION: desk against the back wall; phone + bell physically sit on it.
-  desk(575,155,170,55);
+  desk(550,480,190,50);
   // Draw these after the desk so they are visibly on top of it, not behind it.
-  phone(610,164);bell(704,164);
-  chair(630,225,58,38);
+  phone(590,490);bell(710,490);
+  chair(620,540,58,38);
 
   // OFFICE: desks face inward, monitors sit on desk surfaces, cabinets against walls.
   desk(135,155,145,60);monitor(188,133);
@@ -434,26 +431,19 @@ function render(){
   ctx.fillStyle='#565650';ctx.fillRect(112,590,28,35);
   ctx.fillStyle='#85847b';ctx.fillRect(109,588,34,5);
 
-  // WORK FLOOR: six organized call-centre cubicles in two rows.
-  // Low partitions frame each station; each desk has a monitor, keyboard and chair.
-  function cubicle(x,y){
-   ctx.fillStyle='#6b716c';
-   ctx.fillRect(x,y,130,5);ctx.fillRect(x,y,5,54);ctx.fillRect(x+125,y,5,54);
-   ctx.fillStyle='#96998e';ctx.fillRect(x+5,y+2,120,2);
-   desk(x+12,y+9,106,29);
-   monitor(x+49,y+8);
-   ctx.fillStyle='#393936';ctx.fillRect(x+43,y+29,30,4);
-   ctx.fillStyle='#8b887e';ctx.fillRect(x+47,y+30,22,2);
-   chair(x+45,y+43,34,21);
-  }
-  cubicle(510,490);cubicle(680,490);cubicle(850,490);
-  cubicle(510,585);cubicle(680,585);cubicle(850,585);
-  // Shared printer station against the right wall.
-  cabinet(1040,465,48,56);
-  ctx.fillStyle='#393936';ctx.fillRect(1045,471,38,18);
-  ctx.fillStyle='#c7c2b7';ctx.fillRect(1050,475,28,7);
-  ctx.fillStyle='#8b887e';ctx.fillRect(1051,486,25,2);
-  // Small environmental details
+  // Six compact call-centre stations with a clear cross-aisle.
+   function cubicle(x,y){
+    ctx.fillStyle='#6b716c';ctx.fillRect(x,y,70,5);ctx.fillRect(x,y,5,48);ctx.fillRect(x+65,y,5,48);
+    ctx.fillStyle='#96998e';ctx.fillRect(x+5,y+2,60,2);
+    desk(x+6,y+8,58,27);monitor(x+21,y+7);
+    ctx.fillStyle='#393936';ctx.fillRect(x+20,y+27,27,3);ctx.fillStyle='#8b887e';ctx.fillRect(x+23,y+28,21,2);
+    chair(x+18,y+38,34,21);
+   }
+   cubicle(830,470);cubicle(920,470);cubicle(1010,470);
+   cubicle(830,565);cubicle(920,565);cubicle(1010,565);
+   cabinet(1070,445,25,38);
+   ctx.fillStyle='#393936';ctx.fillRect(1073,450,19,14);ctx.fillStyle='#c7c2b7';ctx.fillRect(1076,453,13,5);
+   // Small environmental details
   ctx.fillStyle='#aaa294';
   for(let i=0;i<8;i++){ctx.fillRect(120+i*105,390,5,3);}
   ctx.fillStyle='#9f988c';ctx.fillRect(102,300,35,4);ctx.fillRect(108,306,22,3);
@@ -462,20 +452,19 @@ function render(){
   ctx.strokeStyle='#191817';ctx.lineWidth=5;ctx.strokeRect(90,100,1020,560);
  }
 
- // Room visibility uses the same new polygons as the rendered architecture.
- if(state==='office'){
-  const rooms=[
-   [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
-   [[540,100],[840,100],[840,300],[810,300],[810,360],[540,360]],
-   [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
-   [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
-   [[490,430],[1110,430],[1110,600],[1060,600],[1060,655],[490,655]]
-  ];
-  const inside=p=>{let hit=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>player.y)!==(b[1]>player.y))&&(player.x<(b[0]-a[0])*(player.y-a[1])/(b[1]-a[1])+a[0]))hit=!hit;}return hit;};
-  const current=rooms.find(inside);ctx.fillStyle='#050505';rooms.forEach(p=>{if(p!==current){ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fill();}});
- }
-
- // Player
+ // Hidden-room masks share the exact footprints used to draw each floor.
+  if(state==='office'){
+   const rooms=[
+    [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
+    [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
+    [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
+    [[490,430],[810,430],[810,655],[490,655]],
+    [[810,430],[1110,430],[1110,600],[1060,600],[1060,655],[810,655]]
+   ];
+   const inside=p=>{let hit=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if(((a[1]>player.y)!==(b[1]>player.y))&&(player.x<(b[0]-a[0])*(player.y-a[1])/(b[1]-a[1])+a[0]))hit=!hit;}return hit;};
+   const current=rooms.find(p=>inside(p));ctx.fillStyle='#050505';rooms.forEach(p=>{if(p!==current){ctx.beginPath();ctx.moveTo(...p[0]);p.slice(1).forEach(v=>ctx.lineTo(...v));ctx.closePath();ctx.fill();}});
+  }
+  // Player
  ctx.fillStyle='#191817';ctx.fillRect(player.x-9,player.y-13,18,26);
  ctx.fillStyle='#e8e2d5';ctx.fillRect(player.x-6,player.y-9,12,9);
  ctx.fillStyle='#a33';ctx.fillRect(player.x-3,player.y-7,2,2);ctx.fillRect(player.x+2,player.y-7,2,2);
