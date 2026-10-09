@@ -724,8 +724,8 @@ function render(){
    ctx.strokeStyle='#353535';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(1081,245);ctx.lineTo(1081,296);ctx.lineTo(1097,296);ctx.stroke();
    ctx.fillStyle='#666666';ctx.fillRect(1070,263,22,24);ctx.fillStyle='#b7b7b7';ctx.fillRect(1073,267,16,2);ctx.fillRect(1073,272,11,2);
    // Reception: obsolete ticket/visitor procedure, cheap acrylic barrier, and abandoned forms.
-   ctx.fillStyle='#353535';ctx.fillRect(636,442,43,25);ctx.fillStyle='#bdbdbd';ctx.fillRect(639,445,37,19);
-   ctx.fillStyle='#5d5d5d';ctx.fillRect(643,449,28,2);ctx.fillRect(643,454,22,2);ctx.fillRect(643,459,26,2);
+   ctx.fillStyle='#353535';ctx.fillRect(535,470,43,25);ctx.fillStyle='#bdbdbd';ctx.fillRect(538,473,37,19);
+   ctx.fillStyle='#5d5d5d';ctx.fillRect(542,477,28,2);ctx.fillRect(542,482,22,2);ctx.fillRect(542,487,26,2);
    ctx.fillStyle='#383838';ctx.fillRect(692,440,2,25);ctx.fillRect(696,440,2,25);ctx.fillRect(700,440,2,25);
    ctx.fillStyle='#8a8a8a';ctx.fillRect(694,441,7,22);
    // Paperwork backlog stacked on the counter's far end, not over the visitor route.
@@ -822,12 +822,12 @@ function render(){
    ctx.fillStyle='#393939';ctx.fillRect(158,475,22,14);ctx.fillStyle='#777777';ctx.fillRect(161,478,16,8);
    ctx.fillStyle='#d2d2d2';ctx.fillRect(166,481,6,3);ctx.fillStyle='#333333';ctx.fillRect(182,477,2,5);
    // RECEPTION: staff-only phone extension, document rack, and a scanner on the desk.
-   wallPhone(658,466);wallFileRack(620,466,25,25);
+   wallPhone(658,469);wallFileRack(604,469,25,25);
    ctx.fillStyle='#333333';ctx.fillRect(733,480,22,7);ctx.fillStyle='#bcbcbc';ctx.fillRect(736,481,16,3);
    ctx.fillStyle='#5d5d5d';ctx.fillRect(739,485,10,1);
    // WORK FLOOR: every workstation gets a paper trail and a practical office object on its desk.
-   folderPile(868,488);printer(911,477,23,18);folderPile(958,488);printer(1001,477,23,18);
-   folderPile(868,598);printer(911,587,23,18);folderPile(958,598);printer(1001,587,23,18);
+   printer(875,462,23,18);folderPile(868,488);printer(965,462,23,18);folderPile(958,488);
+   printer(875,572,23,18);folderPile(868,598);printer(965,572,23,18);folderPile(958,598);
    // The aisle is deliberately left empty: no bins, chairs, cables, or carts cross this strip.
    // More small evidence of neglect: wall-mounted cable sockets and worn floor transition strips.
    [[470,480],[470,590],[830,490],[830,550],[830,600],[880,365],[940,365]].forEach(p=>{
