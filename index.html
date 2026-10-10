@@ -207,8 +207,7 @@ function drawPlayer(){
  ctx.beginPath();ctx.roundRect(player.x+4,player.y,4,9,2);ctx.fill();ctx.stroke();
  ctx.beginPath();ctx.roundRect(player.x-5,player.y+8,4,8,2);ctx.fill();ctx.stroke();
  ctx.beginPath();ctx.roundRect(player.x+1,player.y+8,4,8,2);ctx.fill();ctx.stroke();
- // Minimal downturned expression: deliberately not a detailed face. ctx.strokeStyle='#242424';ctx.lineWidth=1.5;ctx.beginPath();
- ctx.moveTo(player.x-3,player.y-7);ctx.lineTo(player.x-1,player.y-6);
+ // Minimal downturned expression: deliberately not a detailed face. ctx.strokeStyle='#242424';ctx.lineWidth=1.5;ctx.beginPath(); ctx.moveTo(player.x-3,player.y-7);ctx.lineTo(player.x-1,player.y-6);
  ctx.moveTo(player.x+1,player.y-6);ctx.lineTo(player.x+3,player.y-7);
  ctx.moveTo(player.x-2,player.y-2);ctx.quadraticCurveTo(player.x,player.y-4,player.x+2,player.y-2);ctx.stroke();
 }
@@ -427,8 +426,7 @@ function render(){
    // Bell sits physically on the reception desk surface.
    ctx.fillStyle='#9b9b9b';ctx.fillRect(x,y,10,7);
    ctx.fillRect(x+2,y-3,6,3);ctx.fillRect(x+4,y+7,2,2);  }
-  function monitor(x,y){
-   ctx.fillStyle='#282828';ctx.fillRect(x,y,28,20);
+  function monitor(x,y){   ctx.fillStyle='#282828';ctx.fillRect(x,y,28,20);
    ctx.fillStyle='#969696';ctx.fillRect(x+3,y+3,22,13);
    ctx.fillStyle='#282828';ctx.fillRect(x+12,y+20,4,7);ctx.fillRect(x+8,y+27,12,3);
   }
@@ -647,8 +645,7 @@ function render(){
    // Everything is kept on existing work surfaces or against room walls.
    function penCup(x,y){    ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(x+2,y+3,10,10);
     ctx.fillStyle='#424242';ctx.fillRect(x,y,10,10);
-    ctx.fillStyle='#8f8f8f';ctx.fillRect(x+2,y+2,6,6);
-    ctx.fillStyle='#292929';ctx.fillRect(x+2,y-5,2,7);ctx.fillRect(x+5,y-7,2,9);ctx.fillRect(x+7,y-4,2,6);
+    ctx.fillStyle='#8f8f8f';ctx.fillRect(x+2,y+2,6,6);    ctx.fillStyle='#292929';ctx.fillRect(x+2,y-5,2,7);ctx.fillRect(x+5,y-7,2,9);ctx.fillRect(x+7,y-4,2,6);
    }
    function inTray(x,y,w=18){
     ctx.fillStyle='#494949';ctx.fillRect(x,y+3,w,8);
@@ -847,8 +844,7 @@ function render(){
     const glow=ctx.createRadialGradient(x+w/2,y+5,2,x+w/2,y+5,62);
     glow.addColorStop(0,'rgba(245,245,245,.13)');
     glow.addColorStop(1,'rgba(245,245,245,0)');
-    ctx.fillStyle=glow;ctx.fillRect(x-42,y-4,w+84,126);
-    ctx.fillStyle='#292929';ctx.fillRect(x,y,w,7);
+    ctx.fillStyle=glow;ctx.fillRect(x-42,y-4,w+84,126);    ctx.fillStyle='#292929';ctx.fillRect(x,y,w,7);
     ctx.fillStyle='#6b6b6b';ctx.fillRect(x+2,y+1,w-4,5);
     ctx.fillStyle='#e2e2e2';ctx.fillRect(x+5,y+2,w-10,2);
     ctx.fillStyle='rgba(255,255,255,.42)';ctx.fillRect(x+7,y+2,Math.max(4,w*.22),1);
@@ -890,12 +886,30 @@ function render(){
    desk(700,450,90,42);phone(705,457);keyboard(728,480,23);inTray(751,456,18);bell(777,457);
    // Cleanly reset all six cubicle worktops and use separated, desk-sized accessories.
    const station=(x,y,i)=>{
+    // 45x27 usable desktop: screen at rear, keyboard at front, accessories in separate corners.
     ctx.fillStyle='#575757';ctx.fillRect(x+5,y+8,45,27);ctx.fillStyle='#858585';ctx.fillRect(x+6,y+9,43,2);
     ctx.strokeStyle='#333333';ctx.lineWidth=1;ctx.strokeRect(x+5,y+8,45,27);
-    monitor(x+14,y+7);keyboard(x+15,y+27,22);
-    if(i%3===0){ctx.fillStyle='#343434';ctx.fillRect(x+6,y+23,8,10);ctx.fillStyle='#9a9a9a';ctx.fillRect(x+8,y+25,4,5);inTray(x+39,y+24,9);}
-    else if(i%3===1){ctx.fillStyle='#bdbdbd';ctx.fillRect(x+7,y+24,8,7);ctx.strokeStyle='#555555';ctx.strokeRect(x+7,y+24,8,7);mug(x+40,y+25);}
-    else {inTray(x+7,y+24,10);ctx.fillStyle='#4a4a4a';ctx.fillRect(x+39,y+25,8,6);ctx.fillStyle='#a8a8a8';ctx.fillRect(x+41,y+27,4,2);}
+    // Custom low-profile monitor; stand stops above the keyboard zone.
+    ctx.fillStyle='#252525';ctx.fillRect(x+15,y+10,24,12);ctx.strokeStyle='#151515';ctx.strokeRect(x+15,y+10,24,12);
+    ctx.fillStyle='#888888';ctx.fillRect(x+17,y+12,20,8);ctx.fillStyle='#c4c4c4';
+    ctx.fillRect(x+19,y+14,12,1);ctx.fillRect(x+19,y+17,15,1);
+    ctx.fillStyle='#3b3b3b';ctx.fillRect(x+25,y+22,4,2);ctx.fillRect(x+22,y+24,10,1);
+    keyboard(x+16,y+26,21);
+    if(i%3===0){
+     // Tiny pen cup left-front; document tray right-front.
+     ctx.fillStyle='#343434';ctx.fillRect(x+7,y+25,6,8);ctx.fillStyle='#9a9a9a';ctx.fillRect(x+8,y+27,4,4);
+     ctx.fillStyle='#555555';ctx.fillRect(x+9,y+21,1,5);ctx.fillRect(x+11,y+22,1,4);
+     ctx.fillStyle='#494949';ctx.fillRect(x+39,y+25,9,7);ctx.fillStyle='#a9a9a9';ctx.fillRect(x+41,y+26,5,2);
+    } else if(i%3===1){
+     // One compact note pad at left and a mug tucked into the far-right corner.
+     ctx.fillStyle='#bdbdbd';ctx.fillRect(x+7,y+25,7,7);ctx.strokeStyle='#555555';ctx.strokeRect(x+7,y+25,7,7);
+     ctx.fillStyle='#666666';ctx.fillRect(x+9,y+27,4,1);
+     mug(x+38,y+25);
+    } else {
+     // Folder tray at left, stapler at right; neither intrudes into the typing area.
+     ctx.fillStyle='#494949';ctx.fillRect(x+7,y+26,9,6);ctx.fillStyle='#a9a9a9';ctx.fillRect(x+9,y+27,5,2);
+     ctx.fillStyle='#4a4a4a';ctx.fillRect(x+39,y+26,8,5);ctx.fillStyle='#a8a8a8';ctx.fillRect(x+41,y+27,4,2);
+    }
    };
    [[850,455],[940,455],[1030,455],[850,565],[940,565],[1030,565]].forEach((p,i)=>station(p[0],p[1],i));
    // Repaint the entry passage so no decorative wall sockets appear in the walking lane.
