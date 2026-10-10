@@ -177,8 +177,7 @@ function refreshCharacter(){
   '<div class="charRow"><span>Thought</span><b>'+player.thought+'</b></div>'+
   '<div class="charRow"><span>Disgust</span><b>'+player.disgust+'</b></div>'+
   '<div class="charRow"><span>Affinity</span><b>'+player.aff+'</b></div>';
- document.getElementById('charInventory').innerHTML=
-  '<div class="charRow"><span>Pills</span><b>'+player.items+'</b></div>';
+ document.getElementById('charInventory').innerHTML=  '<div class="charRow"><span>Pills</span><b>'+player.items+'</b></div>';
 }
 charBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();refreshCharacter();charMenu.classList.add('open')});
 charClose.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();charMenu.classList.remove('open')});
@@ -357,8 +356,7 @@ function render(){
    // entry room below, with break room left and the call-centre to the right.
    const roomPolys=[
     [[90,100],[410,100],[410,130],[490,130],[490,360],[90,360]],
-    [[520,145],[705,145],[705,360],[520,360]],
-    [[710,145],[890,145],[890,360],[710,360]],
+    [[520,145],[705,145],[705,360],[520,360]],    [[710,145],[890,145],[890,360],[710,360]],
     [[890,100],[1110,100],[1110,330],[1070,330],[1070,360],[890,360]],
     [[90,430],[365,430],[365,465],[440,465],[440,655],[90,655]],
     [[490,430],[810,430],[810,655],[490,655]],
@@ -537,8 +535,7 @@ function render(){
   ctx.fillStyle='#757575';ctx.fillRect(310,450,27,3);
   // Lunch table with evenly spaced chairs on both long sides.
   table(185,535,180,58);
-  chair(205,505,34,25);chair(260,505,34,25);chair(315,505,34,25);
-  chair(205,600,34,25);chair(260,600,34,25);chair(315,600,34,25);
+  chair(205,505,34,25);chair(260,505,34,25);chair(315,505,34,25);  chair(205,600,34,25);chair(260,600,34,25);chair(315,600,34,25);
   // Bin beside the kitchenette, away from the walking lane.
   ctx.fillStyle='#555555';ctx.fillRect(112,590,28,35);
   ctx.fillStyle='#838383';ctx.fillRect(109,588,34,5);
@@ -717,8 +714,7 @@ function render(){
    // STORAGE: battered carton labels, a hand truck silhouette, and a shelf audit sheet.
    ctx.fillStyle='#333333';ctx.fillRect(904,232,58,13);ctx.fillStyle='#bdbdbd';ctx.fillRect(907,235,52,7);
    ctx.fillStyle='#565656';ctx.fillRect(910,237,20,2);ctx.fillRect(933,237,22,2);
-   ctx.fillStyle='#777777';ctx.fillRect(1040,231,54,12);ctx.fillStyle='#c6c6c6';ctx.fillRect(1043,234,48,6);
-   ctx.fillStyle='#555555';ctx.fillRect(1046,236,14,2);ctx.fillRect(1064,236,23,2);
+   ctx.fillStyle='#777777';ctx.fillRect(1040,231,54,12);ctx.fillStyle='#c6c6c6';ctx.fillRect(1043,234,48,6);   ctx.fillStyle='#555555';ctx.fillRect(1046,236,14,2);ctx.fillRect(1064,236,23,2);
    // A dented step-stool and a hand truck are parked tight to the storage wall, outside the aisle.
    ctx.fillStyle='#4a4a4a';ctx.fillRect(905,319,42,7);ctx.fillRect(910,326,5,4);ctx.fillRect(937,326,5,4);
 
@@ -848,6 +844,47 @@ function render(){
    for(let xx=150;xx<1080;xx+=185){ctx.fillStyle='#777777';ctx.fillRect(xx,605,82,28);ctx.strokeStyle='#333333';ctx.lineWidth=2;ctx.strokeRect(xx,605,82,28);ctx.fillStyle='#bcbcbc';ctx.fillRect(xx+6,610,70,3);ctx.fillStyle='#555555';ctx.fillRect(xx+8,618,66,2);}
    const vg=ctx.createRadialGradient(600,380,160,600,380,700);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.35)');ctx.fillStyle=vg;ctx.fillRect(44,44,1112,672);
   }
+
+
+  // ATMOSPHERIC ART PASS — restrained fluorescent pools, architectural trim, and tile wear.
+  // This pass is decorative only: it does not touch collision, movement, pickups, or combat.
+  function ceilingLight(x,y,w=44){
+    ctx.save();
+    const glow=ctx.createRadialGradient(x+w/2,y+5,2,x+w/2,y+5,62);
+    glow.addColorStop(0,'rgba(245,245,245,.13)');
+    glow.addColorStop(1,'rgba(245,245,245,0)');
+    ctx.fillStyle=glow;ctx.fillRect(x-42,y-4,w+84,126);
+    ctx.fillStyle='#292929';ctx.fillRect(x,y,w,7);
+    ctx.fillStyle='#6b6b6b';ctx.fillRect(x+2,y+1,w-4,5);
+    ctx.fillStyle='#e2e2e2';ctx.fillRect(x+5,y+2,w-10,2);
+    ctx.fillStyle='rgba(255,255,255,.42)';ctx.fillRect(x+7,y+2,Math.max(4,w*.22),1);
+    ctx.restore();
+  }
+  function wallTrim(x,y,w){
+    ctx.fillStyle='#343434';ctx.fillRect(x,y,w,5);
+    ctx.fillStyle='#777777';ctx.fillRect(x,y+1,w,1);
+    ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(x,y+2,w,1);
+  }
+  // Continuous skirting makes room boundaries read as constructed walls, not flat outlines.
+  wallTrim(90,350,400);wallTrim(520,350,185);wallTrim(710,350,180);
+  wallTrim(890,350,180);wallTrim(90,645,350);wallTrim(490,645,320);wallTrim(810,645,300);
+  // Ceiling fixtures are aligned to the room axes and kept clear of labels and props.
+  [[170,111,44],[310,111,44],[565,151,42],[655,151,42],[755,151,42],[835,151,42],
+   [145,441,44],[285,441,44],[535,441,44],[665,441,44],[850,441,44],[1010,441,44]].forEach(a=>ceilingLight(...a));
+  // Tiny, low-contrast wear marks break up the sterile tile repetition without obscuring routes.
+  ctx.save();ctx.globalAlpha=.16;ctx.strokeStyle='#4b4b4b';ctx.lineWidth=1;
+  [[118,215,12,3],[248,330,16,2],[452,312,10,3],[550,385,18,2],[680,397,12,3],
+   [735,386,17,2],[935,391,13,3],[1012,385,18,2],[160,578,13,2],[408,618,17,3],
+   [566,616,11,2],[758,625,16,2],[930,604,12,3],[1070,583,17,2]].forEach(a=>{
+    ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+a[2],a[1]+a[3]);ctx.stroke();
+   });
+  ctx.restore();
+  // A subtle cool-grey ambient falloff supports the reference's heavy, enclosed atmosphere.
+  const roomShade=ctx.createRadialGradient(600,370,150,600,370,690);
+  roomShade.addColorStop(0,'rgba(8,8,8,0)');
+  roomShade.addColorStop(.72,'rgba(8,8,8,.035)');
+  roomShade.addColorStop(1,'rgba(8,8,8,.16)');
+  ctx.fillStyle=roomShade;ctx.fillRect(44,44,1112,672);
 
   // Hidden-room masks share the exact footprints used to draw each floor.
   if(state==='office'){
