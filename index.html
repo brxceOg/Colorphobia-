@@ -134,7 +134,7 @@ function resize(){
 }
 addEventListener('resize',resize);resize();
 
-const player={x:300,y:245,r:13,spd:2.5,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
+const player={x:300,y:245,r:9,spd:2.8,hp:80,maxhp:80,str:22,pow:12,fear:12,thought:25,disgust:15,aff:0,items:1,construct:''};
 let state='office', battle=null, pillsFound=false, flash=0, running=false, encounterStarted=false;
 let lastRoomName='';
 function roomName(){
@@ -240,10 +240,13 @@ function world(){
 }
 
 function collide(x,y){
+ // The sprite's art is wider than its actual footprint; a compact circular collider
+ // prevents snagging on desk corners while preserving solid walls and major furniture.
  const r=player.r,worldW=1200,worldH=760;
  if(x-r<44||x+r>worldW-44||y-r<44||y+r>worldH-44)return true;
  const obstacles=[],box=(x,y,w,h)=>obstacles.push({x,y,w,h});
  if(state==='office'){
+  // Structural walls. Door gaps are intentionally wider than the player collider.
   box(90,100,320,5);box(410,100,5,30);box(410,125,80,5);box(485,130,5,230);box(90,355,130,5);box(290,355,200,5);box(90,100,5,260);
   box(520,145,370,5);box(520,145,5,215);box(705,145,5,215);box(710,145,180,5);box(885,145,5,215);
   box(520,355,50,5);box(640,355,65,5);box(710,355,50,5);box(830,355,60,5);
@@ -251,7 +254,23 @@ function collide(x,y){
   box(90,430,275,5);box(365,430,5,35);box(365,460,75,5);box(90,655,350,5);box(90,430,5,225);box(435,465,5,35);box(435,563,5,92);
   box(490,430,130,5);box(690,430,120,5);box(490,655,130,5);box(690,655,120,5);box(490,430,5,70);box(490,560,5,95);box(805,430,5,70);box(805,560,5,95);
   box(810,430,300,5);box(810,655,300,5);box(1105,430,5,225);
-  [[135,155,145,60],[325,155,100,60],[125,275,55,65],[410,275,55,65],[520,555,38,34],[520,600,38,34],[560,570,48,42],[900,125,65,100],[1035,125,65,100],[900,250,60,50],[1035,250,60,45],[642,170,46,4],[642,170,4,76],[684,170,4,76],[650,190,30,28],[535,192,23,31],[535,237,23,31],[530,286,32,56],[570,278,22,20],[570,305,20,28],[722,168,43,4],[722,168,4,78],[761,168,4,78],[770,168,43,4],[770,168,4,78],[809,168,4,78],[818,168,43,4],[818,168,4,78],[857,168,4,78],[728,190,30,28],[776,190,30,28],[824,190,30,28],[727,222,33,4],[775,222,33,4],[823,222,33,4],[844,270,31,71],[846,248,26,16],[818,286,17,25],[108,465,42,65],[158,465,145,38],[185,535,180,58],[205,505,34,25],[260,505,34,25],[315,505,34,25],[205,600,34,25],[260,600,34,25],[315,600,34,25],[700,450,90,42],[715,500,45,30],[850,455,55,58],[940,455,55,58],[1030,455,55,58],[850,565,55,58],[940,565,55,58],[1030,565,55,58]].forEach(o=>box(...o));
+  // Major furniture only. Decorative desktop items deliberately have no colliders.
+  // Use inset hitboxes to avoid snagging on invisible corners around desks.
+  [[139,160,137,48],[329,160,92,48],[129,280,47,55],[414,280,47,55],
+   [524,559,30,26],[524,604,30,26],[564,574,40,34],
+   [904,129,57,92],[1039,129,57,92],[904,254,52,42],[1039,254,52,37],
+   [646,174,38,68],[539,196,15,25],[539,241,15,25],[534,290,24,48],
+   [726,172,34,70],[774,172,34,70],[822,172,34,70],
+   [848,274,23,62],[822,290,13,18],
+   [112,469,34,57],[162,469,137,30],
+   [189,539,172,50],[209,509,26,17],[264,509,26,17],[319,509,26,17],
+   [209,604,26,17],[264,604,26,17],[319,604,26,17],
+   // Reception desk: inset collider; chair is smaller and offset so the approach remains open.
+   [704,454,82,34],[720,503,35,24],
+   // Cubicles: compact inset footprints leave clear aisles between rows and columns.
+   [854,459,47,49],[944,459,47,49],[1034,459,47,49],
+   [854,569,47,49],[944,569,47,49],[1034,569,47,49]
+  ].forEach(o=>box(...o));
  }
  return obstacles.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
 }
@@ -261,9 +280,15 @@ function update(){
   let dy=(keys['arrowdown']||keys['s']||keys.down||touchMove.down?1:0)-(keys['arrowup']||keys['w']||keys.up||touchMove.up?1:0);
   if(dx||dy){
    let n=Math.hypot(dx,dy);dx/=n;dy/=n;
-   let nx=player.x+dx*player.spd,ny=player.y+dy*player.spd;
-   if(!collide(nx,player.y))player.x=nx;
-   if(!collide(player.x,ny))player.y=ny;
+   // Sub-stepped movement avoids tunnelling and makes wall sliding consistent.
+   const steps=Math.max(1,Math.ceil(player.spd/2));
+   const sx=dx*player.spd/steps,sy=dy*player.spd/steps;
+   for(let i=0;i<steps;i++){
+    const nx=player.x+sx;
+    if(!collide(nx,player.y))player.x=nx;
+    const ny=player.y+sy;
+    if(!collide(player.x,ny))player.y=ny;
+   }
   }
   if(state==='office'&&!pillsFound&&Math.hypot(player.x-465,player.y-220)<45){pillsFound=true;player.items++;say('You found the pills. They are the same pills you have been taking.');flash=8}
   if(state==='office'&&!encounterStarted&&pillsFound&&roomName()==='MEN’S RESTROOM'&&player.x>575&&player.x<635&&player.y>265&&player.y<345){encounterStarted=true;startBattle()}
