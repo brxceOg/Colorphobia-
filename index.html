@@ -839,7 +839,8 @@ function render(){
 
 
   // ATMOSPHERIC ART PASS — restrained fluorescent pools, architectural trim, and tile wear.
-  // This pass is decorative only: it does not touch collision, movement, pickups, or combat.  function ceilingLight(x,y,w=44){
+  // This pass is decorative only: it does not touch collision, movement, pickups, or combat.
+  function ceilingLight(x,y,w=44){
     ctx.save();
     const glow=ctx.createRadialGradient(x+w/2,y+5,2,x+w/2,y+5,62);
     glow.addColorStop(0,'rgba(245,245,245,.13)');
