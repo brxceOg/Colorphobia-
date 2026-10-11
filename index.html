@@ -931,10 +931,10 @@ function render(){
   if(state==='office'){
    // Right-hand reception entrance into workstations: clear a 64px approach around the doorway.
    // The room wall opening is x=805..810, y=500..560; no furniture may intrude on the approach.
-   ctx.fillStyle='#e2e2e2';ctx.fillRect(790,493,15,66);
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(765,493,40,66);
    ctx.strokeStyle='rgba(70,70,70,.25)';ctx.lineWidth=1;
-   for(let yy=496;yy<559;yy+=32){ctx.beginPath();ctx.moveTo(790,yy);ctx.lineTo(805,yy);ctx.stroke();}
-   ctx.beginPath();ctx.moveTo(798,493);ctx.lineTo(798,559);ctx.stroke();
+   for(let yy=496;yy<559;yy+=32){ctx.beginPath();ctx.moveTo(765,yy);ctx.lineTo(805,yy);ctx.stroke();}
+   for(let xx=773;xx<805;xx+=32){ctx.beginPath();ctx.moveTo(xx,493);ctx.lineTo(xx,559);ctx.stroke();}
    // Erase the stray scanner/paper stack across the reception visitor side.
    ctx.fillStyle='#e2e2e2';ctx.fillRect(728,474,48,20);
    // Neatly spaced reception equipment; leave the right edge open for passage.
@@ -969,7 +969,7 @@ function render(){
    // Coordinate-based door and prop audit (world coordinates).
    const rectsOverlap=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
    const walkLanes=[
-    {name:'reception-to-workstations',x:790,y:493,w:15,h:66},
+    {name:'reception-to-workstations',x:765,y:493,w:40,h:66},
     {name:'private-office-door',x:220,y:350,w:70,h:14},
     {name:'men-restroom-door',x:570,y:350,w:70,h:14},
     {name:'women-restroom-door',x:760,y:350,w:70,h:14},
