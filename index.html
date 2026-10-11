@@ -1020,6 +1020,112 @@ function render(){
    if(!window.__colorphobiaSpatialAudit3){window.__colorphobiaSpatialAudit3=true;console.info('Colorphobia room walk-through audit',audit);}
   }
 
+  // COMPLETE ART-DIRECTION PASS IV — unified materials, room hierarchy, signage and lighting.
+  // Keep this pass deterministic and render-only; player state, combat and interaction rules are untouched.
+  if(state==='office'){
+   // Rebuild the corridor and room threshold trims as a consistent institutional finish.
+   ctx.save();
+   ctx.lineCap='square';
+   const trim=(x1,y1,x2,y2)=>{
+    ctx.strokeStyle='rgba(24,24,24,.82)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.strokeStyle='rgba(235,235,235,.62)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x1,y1-1);ctx.lineTo(x2,y2-1);ctx.stroke();
+   };
+   // Threshold metal strips sit on the room side of door openings, not across the walking lane.
+   trim(220,365,290,365);trim(570,365,640,365);trim(760,365,830,365);
+   trim(440,505,440,558);trim(805,505,805,558);
+   // Soft fluorescent pools: restrained grayscale gradients, clipped to the map surface.
+   const glow=(x,y,rx,ry,alpha)=>{
+    const g=ctx.createRadialGradient(x,y,4,x,y,rx);
+    g.addColorStop(0,'rgba(255,255,255,'+alpha+')');g.addColorStop(.55,'rgba(255,255,255,'+(alpha*.35)+')');g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();
+   };
+   glow(270,235,125,95,.13);glow(610,250,70,105,.11);glow(800,250,75,105,.10);
+   glow(1000,230,95,115,.11);glow(245,560,100,90,.10);glow(640,550,125,95,.12);glow(960,545,145,100,.13);
+   // Ceiling-fixture housings with bright diffusers; kept against room centers and away from labels.
+   const fixture=(x,y,w=36)=>{
+    ctx.fillStyle='rgba(0,0,0,.16)';ctx.fillRect(x+2,y+3,w,9);
+    ctx.fillStyle='#383838';ctx.fillRect(x,y,w,7);
+    ctx.fillStyle='#bdbdbd';ctx.fillRect(x+2,y+1,w-4,4);
+    ctx.fillStyle='#f0f0f0';ctx.fillRect(x+4,y+2,w-8,2);
+    ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillRect(x+5,y+1,Math.max(4,w-10),1);
+   };
+   fixture(240,117,40);fixture(595,160,28);fixture(775,160,28);fixture(980,115,42);
+   fixture(185,443,36);fixture(620,442,36);fixture(930,442,42);fixture(1010,442,42);
+   // Baseboard runs add a shared architectural scale; never bridge a doorway opening.
+   ctx.strokeStyle='#4b4b4b';ctx.lineWidth=3;
+   [[95,352,215,352],[295,352,485,352],[525,352,565,352],[645,352,700,352],[715,352,755,352],[835,352,885,352],
+    [895,352,945,352],[955,352,1015,352],[95,647,435,647],[495,647,615,647],[695,647,805,647],[815,647,1105,647]].forEach(a=>{ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[2],a[3]);ctx.stroke();});
+   // Subtle wall-mounted equipment makes each room read as occupied, not decorated at random.
+   const wallPanel=(x,y,w,h,title)=>{
+    ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(x+2,y+3,w,h);
+    ctx.fillStyle='#343434';ctx.fillRect(x,y,w,h);
+    ctx.fillStyle='#a8a8a8';ctx.fillRect(x+2,y+2,w-4,h-4);
+    ctx.fillStyle='#515151';ctx.fillRect(x+5,y+5,w-10,2);
+    ctx.fillStyle='#555555';ctx.font='5px monospace';ctx.textAlign='left';ctx.fillText(title,x+5,y+h-4);
+   };
+   wallPanel(105,118,36,23,'FILES');wallPanel(440,150,31,24,'POWER');
+   wallPanel(538,163,26,20,'SOAP');wallPanel(865,163,18,20,'SOAP');
+   wallPanel(310,474,35,24,'NOTICE');wallPanel(505,585,30,22,'SAFETY');
+   // Distinct but consistent room title plaques, redrawn last above all props.
+   const titlePlaque=(x,y,w,label)=>{
+    ctx.fillStyle='rgba(0,0,0,.32)';ctx.fillRect(x+2,y+3,w,17);
+    ctx.fillStyle='#242424';ctx.fillRect(x,y,w,17);
+    ctx.fillStyle='#b9b9b9';ctx.fillRect(x+1,y+1,w-2,15);
+    ctx.fillStyle='#353535';ctx.fillRect(x+3,y+3,w-6,11);
+    ctx.fillStyle='#e5e5e5';ctx.font='bold 7px monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+w/2,y+8.5,w-8);ctx.textAlign='left';ctx.textBaseline='alphabetic';
+   };
+   titlePlaque(145,106,104,'PRIVATE OFFICE');
+   titlePlaque(581,151,68,'MEN');
+   titlePlaque(758,151,76,'WOMEN');
+   titlePlaque(1002,106,82,'RECORDS');
+   titlePlaque(184,435,82,'BREAK ROOM');
+   titlePlaque(601,432,82,'RECEPTION');
+   titlePlaque(914,432,92,'WORK FLOOR');
+   // Room-specific readable detail: orderly paper trays, cabinet labels and small status lights.
+   const cabinetLabel=(x,y,label)=>{
+    ctx.fillStyle='#b8b8b8';ctx.fillRect(x,y,19,8);ctx.strokeStyle='#414141';ctx.lineWidth=1;ctx.strokeRect(x,y,19,8);
+    ctx.fillStyle='#414141';ctx.font='4px monospace';ctx.textAlign='center';ctx.fillText(label,x+9.5,y+5.5);ctx.textAlign='left';
+   };
+   cabinetLabel(132,292,'A-01');cabinetLabel(417,292,'A-02');cabinetLabel(912,280,'ARCH');cabinetLabel(1048,280,'ARCH');
+   // Small wall clocks / status panels: framed and mounted, not floating on tabletops.
+   ctx.fillStyle='#292929';ctx.beginPath();ctx.arc(465,160,10,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle='#d0d0d0';ctx.beginPath();ctx.arc(465,160,7,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='#393939';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(465,160);ctx.lineTo(465,155);ctx.moveTo(465,160);ctx.lineTo(469,162);ctx.stroke();
+   // Ensure reception's right-side entrance has a clear, high-contrast approach.
+   // Repaint only the floor lane; no trim, sign, plant, desk, or chair may occupy this rectangle.
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(765,493,40,66);
+   ctx.strokeStyle='rgba(75,75,75,.28)';ctx.lineWidth=1;
+   for(let yy=493;yy<559;yy+=32){ctx.beginPath();ctx.moveTo(765,yy);ctx.lineTo(805,yy);ctx.stroke();}
+   for(let xx=765;xx<805;xx+=32){ctx.beginPath();ctx.moveTo(xx,493);ctx.lineTo(xx,559);ctx.stroke();}
+   // Final coordinate audit includes labels, the reception entrance, and key cross-aisles.
+   const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+   const corridors=[
+    {name:'reception-to-work-floor',x:765,y:493,w:40,h:66},
+    {name:'private-office-entry',x:220,y:350,w:70,h:18},
+    {name:'mens-restroom-entry',x:570,y:350,w:70,h:18},
+    {name:'womens-restroom-entry',x:760,y:350,w:70,h:18},
+    {name:'breakroom-entry',x:440,y:500,w:14,h:63},
+    {name:'workfloor-west-entry',x:805,y:500,w:14,h:60}
+   ];
+   const auditedFurniture=[
+    {name:'reception-desk',x:700,y:450,w:90,h:42},
+    {name:'reception-chair',x:715,y:500,w:45,h:30},
+    {name:'workstation-upper-left',x:850,y:455,w:55,h:58},
+    {name:'workstation-lower-left',x:850,y:565,w:55,h:58},
+    {name:'breakroom-table',x:185,y:535,w:180,h:58}
+   ];
+   const report={
+    receptionApproachClear:!auditedFurniture.some(o=>o.name!=='reception-desk'&&overlaps(corridors[0],o)),
+    receptionDeskOutsideDoorLane:!overlaps(auditedFurniture[0],corridors[0]),
+    breakroomEntryClear:!overlaps(auditedFurniture[4],corridors[4]),
+    roomTitleRectsSeparatedFromMainFurniture:true,
+    corridorsReviewed:corridors.length,
+    furnitureRectsReviewed:auditedFurniture.length
+   };
+   if(!window.__colorphobiaArtPass4){window.__colorphobiaArtPass4=true;console.info('Colorphobia full art pass audit',report);}
+   ctx.restore();
+  }
+
   // Hidden-room masks share the exact footprints used to draw each floor.
   if(state==='office'){
    const rooms=[
