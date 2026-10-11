@@ -926,6 +926,75 @@ function render(){
    if(!window.__colorphobiaSpatialAuditLogged){window.__colorphobiaSpatialAuditLogged=true;console.info('Colorphobia spatial audit',audit);}
   }
 
+  // ROOM-BY-ROOM SPATIAL CLEANUP PASS III
+  // Render-only corrections after decorative props: clear door approach, restore signage, organize desks.
+  if(state==='office'){
+   // Right-hand reception entrance into workstations: clear a 64px approach around the doorway.
+   // The room wall opening is x=805..810, y=500..560; no furniture may intrude on the approach.
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(790,493,15,66);
+   ctx.strokeStyle='rgba(70,70,70,.25)';ctx.lineWidth=1;
+   for(let yy=496;yy<559;yy+=32){ctx.beginPath();ctx.moveTo(790,yy);ctx.lineTo(805,yy);ctx.stroke();}
+   ctx.beginPath();ctx.moveTo(798,493);ctx.lineTo(798,559);ctx.stroke();
+   // Erase the stray scanner/paper stack across the reception visitor side.
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(728,474,48,20);
+   // Neatly spaced reception equipment; leave the right edge open for passage.
+   desk(700,450,90,42);phone(705,458);keyboard(728,480,22);inTray(753,456,17);bell(777,458);
+   // Relocate the decorative plant well away from the doorway approach.
+   plantPot(635,590);
+   // Repaint every room plaque last so furniture and props cannot obscure labels.
+   plaque(145,106,92,'PRIVATE OFFICE');
+   plaque(581,151,72,'MEN');
+   plaque(758,151,76,'WOMEN');
+   plaque(1002,106,82,'RECORDS');
+   plaque(184,435,78,'BREAK ROOM');
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(596,431,92,22);
+   plaque(601,432,82,'RECEPTION');
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(912,431,96,22);
+   plaque(914,432,92,'WORKSTATIONS');
+   // Reset office desks and re-place items as distinct, usable workstation zones.
+   desk(135,155,145,60);monitor(188,133);
+   paperStack(148,180,23,15);keyboard(196,183,26);penCup(257,180);
+   desk(325,155,100,60);monitor(355,135);
+   keyboard(360,183,24);paperStack(333,180,18,13);inTray(389,181,18);
+   // Break-room tabletop: one neat note pad and a mug, with generous empty working space.
+   table(185,535,180,58);
+   ctx.fillStyle='#b7b7b7';ctx.fillRect(224,548,21,12);
+   ctx.strokeStyle='#454545';ctx.lineWidth=1;ctx.strokeRect(224,548,21,12);
+   ctx.fillStyle='#696969';ctx.fillRect(227,551,15,1);ctx.fillRect(227,555,11,1);
+   mug(280,548);
+   // Remove the step-stool that was visually floating against the storage wall.
+   ctx.fillStyle='#e2e2e2';ctx.fillRect(900,314,58,31);
+   // Restore tile texture subtly inside the cleared storage patch.
+   ctx.strokeStyle='rgba(70,70,70,.25)';ctx.beginPath();ctx.moveTo(900,330);ctx.lineTo(958,330);ctx.stroke();
+   // Coordinate-based door and prop audit (world coordinates).
+   const rectsOverlap=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+   const walkLanes=[
+    {name:'reception-to-workstations',x:790,y:493,w:15,h:66},
+    {name:'private-office-door',x:220,y:350,w:70,h:14},
+    {name:'men-restroom-door',x:570,y:350,w:70,h:14},
+    {name:'women-restroom-door',x:760,y:350,w:70,h:14},
+    {name:'breakroom-side-door',x:432,y:500,w:12,h:63}
+   ];
+   const furniture=[
+    {name:'reception-desk',x:700,y:450,w:90,h:42},
+    {name:'reception-chair',x:715,y:500,w:45,h:30},
+    {name:'reception-plant',x:635,y:590,w:22,h:24},
+    {name:'office-desk-one',x:135,y:155,w:145,h:68},
+    {name:'office-desk-two',x:325,y:155,w:100,h:68},
+    {name:'break-table',x:185,y:535,w:180,h:58},
+    {name:'workstation-top-left',x:850,y:455,w:55,h:58},
+    {name:'workstation-bottom-left',x:850,y:565,w:55,h:58}
+   ];
+   const audit={
+    receptionDoorApproachClear: ![furniture[0],furniture[1],furniture[2],furniture[6],furniture[7]].some(o=>rectsOverlap(walkLanes[0],o)),
+    officeDeskContained: furniture[3].x>=90&&furniture[3].x+furniture[3].w<=490&&furniture[3].y>=100&&furniture[3].y+furniture[3].h<=360,
+    receptionLabelClear: !rectsOverlap({x:601,y:432,w:82,h:17},{x:700,y:450,w:90,h:42}),
+    doorLanesReviewed: walkLanes.length,
+    roomPropsReviewed: furniture.length
+   };
+   if(!window.__colorphobiaSpatialAudit3){window.__colorphobiaSpatialAudit3=true;console.info('Colorphobia room walk-through audit',audit);}
+  }
+
   // Hidden-room masks share the exact footprints used to draw each floor.
   if(state==='office'){
    const rooms=[
